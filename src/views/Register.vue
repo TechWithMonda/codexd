@@ -20,8 +20,12 @@
         </div>
         <nav>
           <ul class="flex space-x-8">
-            <li><a href="#" class="hover:text-yellow-400 transition-all duration-300 hover:scale-105">Home</a></li>
-            <li><a href="#" class="hover:text-yellow-400 transition-all duration-300 hover:scale-105">About</a></li>
+            <router-link to="/">
+              <li><a href="#" class="hover:text-yellow-400 transition-all duration-300 hover:scale-105">Home</a></li>
+            </router-link>
+            <router-link to="TermsAndCondition">
+              <li><a href="#" class="hover:text-yellow-400 transition-all duration-300 hover:scale-105">TermsAndCondition</a></li>
+            </router-link>
             <li><a href="#" @click="showLogin = true" class="hover:text-yellow-400 transition-all duration-300 hover:scale-105 cursor-pointer">Login</a></li>
           </ul>
         </nav>

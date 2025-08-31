@@ -1,335 +1,207 @@
 <template>
-  <div
-    class="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white relative overflow-hidden"
-  >
+  <div class="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white relative overflow-hidden">
     <!-- Animated Background Elements -->
     <div class="absolute inset-0 overflow-hidden">
-      <div
-        class="absolute -top-40 -right-40 w-80 h-80 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"
-      ></div>
-      <div
-        class="absolute -bottom-40 -left-40 w-80 h-80 bg-yellow-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"
-      ></div>
-      <div
-        class="absolute top-40 left-40 w-80 h-80 bg-pink-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"
-      ></div>
+      <div class="absolute -top-40 -right-40 w-60 h-60 sm:w-80 sm:h-80 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
+      <div class="absolute -bottom-40 -left-40 w-60 h-60 sm:w-80 sm:h-80 bg-yellow-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
+      <div class="absolute top-40 left-40 w-60 h-60 sm:w-80 sm:h-80 bg-pink-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
     </div>
 
     <div class="relative z-10">
       <!-- Header -->
-      <header class="flex justify-between items-center p-6 backdrop-blur-sm">
-        <div class="flex items-center space-x-3">
-          <div
-            class="w-10 h-10 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-xl flex items-center justify-center text-2xl animate-pulse"
-          >
+      <header class="flex flex-col sm:flex-row justify-between items-center p-4 sm:p-6 backdrop-blur-sm">
+        <div class="flex items-center space-x-3 mb-4 sm:mb-0">
+          <div class="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-xl flex items-center justify-center text-xl sm:text-2xl animate-pulse">
             ⚡
           </div>
-          <h1
-            class="text-3xl font-bold bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent"
-          >
+          <h1 class="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">
             Fast Fingers
           </h1>
         </div>
-        <nav>
-          <ul class="flex space-x-8">
+        <nav class="w-full sm:w-auto">
+          <ul class="flex justify-center sm:justify-end space-x-4 sm:space-x-8">
             <router-link to="/">
-              <li>
-                <a
-                  href="#"
-                  class="hover:text-yellow-400 transition-all duration-300 hover:scale-105"
-                  >Play Game</a
-                >
-              </li>
+              <li><a href="#" class="text-sm sm:text-base hover:text-yellow-400 transition-all duration-300 hover:scale-105">Play Game</a></li>
             </router-link>
-            <li>
-              <a href="#" class="text-yellow-400 font-bold">Leaderboard</a>
-            </li>
-            <li>
-              <a
-                href="#"
-                class="hover:text-yellow-400 transition-all duration-300 hover:scale-105"
-                >Profile</a
-              >
-            </li>
+            <li><a href="#" class="text-sm sm:text-base text-yellow-400 font-bold">Leaderboard</a></li>
           </ul>
         </nav>
       </header>
 
-      <div class="max-w-7xl mx-auto px-6 py-8">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
         <!-- Hero Section -->
-        <div class="text-center mb-12 animate-slide-down">
-          <div class="text-8xl mb-4">🏆</div>
-          <h2
-            class="text-5xl font-bold mb-4 bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 bg-clip-text text-transparent"
-          >
+        <div class="text-center mb-8 sm:mb-12 animate-slide-down">
+          <div class="text-4xl sm:text-6xl md:text-8xl mb-4">🏆</div>
+          <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 bg-clip-text text-transparent">
             Global Champions
           </h2>
-          <p class="text-xl text-gray-300 max-w-2xl mx-auto">
-            Compete with the world's fastest typists. Climb the ranks and prove
-            your typing mastery!
+          <p class="text-base sm:text-xl text-gray-300 max-w-2xl mx-auto px-4">
+            Compete with the world's fastest typists. Climb the ranks and prove your typing mastery!
           </p>
         </div>
 
         <!-- Stats Overview -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
-          <div
-            class="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 text-center transform hover:scale-105 transition-all duration-300"
-          >
-            <div class="text-4xl mb-3">🌍</div>
-            <div class="text-3xl font-bold text-blue-400">
-              {{ totalPlayers.toLocaleString() }}
-            </div>
-            <div class="text-sm text-gray-300 mt-1">Global Players</div>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-6 mb-8 sm:mb-12">
+          <div class="bg-white/10 backdrop-blur-md rounded-xl sm:rounded-2xl p-3 sm:p-6 border border-white/20 text-center transform hover:scale-105 transition-all duration-300">
+            <div class="text-2xl sm:text-4xl mb-2 sm:mb-3">🌍</div>
+            <div class="text-xl sm:text-3xl font-bold text-blue-400">{{ totalPlayers.toLocaleString() }}</div>
+            <div class="text-xs sm:text-sm text-gray-300 mt-1">Global Players</div>
           </div>
-          <div
-            class="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 text-center transform hover:scale-105 transition-all duration-300"
-          >
-            <div class="text-4xl mb-3">⚡</div>
-            <div class="text-3xl font-bold text-yellow-400">
-              {{ averageWPM }}
-            </div>
-            <div class="text-sm text-gray-300 mt-1">Average WPM</div>
+          <div class="bg-white/10 backdrop-blur-md rounded-xl sm:rounded-2xl p-3 sm:p-6 border border-white/20 text-center transform hover:scale-105 transition-all duration-300">
+            <div class="text-2xl sm:text-4xl mb-2 sm:mb-3">⚡</div>
+            <div class="text-xl sm:text-3xl font-bold text-yellow-400">{{ averageWPM }}</div>
+            <div class="text-xs sm:text-sm text-gray-300 mt-1">Average WPM</div>
           </div>
-          <div
-            class="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 text-center transform hover:scale-105 transition-all duration-300"
-          >
-            <div class="text-4xl mb-3">🎯</div>
-            <div class="text-3xl font-bold text-green-400">
-              {{ averageAccuracy }}%
-            </div>
-            <div class="text-sm text-gray-300 mt-1">Average Accuracy</div>
+          <div class="bg-white/10 backdrop-blur-md rounded-xl sm:rounded-2xl p-3 sm:p-6 border border-white/20 text-center transform hover:scale-105 transition-all duration-300">
+            <div class="text-2xl sm:text-4xl mb-2 sm:mb-3">🎯</div>
+            <div class="text-xl sm:text-3xl font-bold text-green-400">{{ averageAccuracy }}%</div>
+            <div class="text-xs sm:text-sm text-gray-300 mt-1">Average Accuracy</div>
           </div>
-          <div
-            class="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 text-center transform hover:scale-105 transition-all duration-300"
-          >
-            <div class="text-4xl mb-3">🔥</div>
-            <div class="text-3xl font-bold text-red-400">{{ recordWPM }}</div>
-            <div class="text-sm text-gray-300 mt-1">World Record</div>
+          <div class="bg-white/10 backdrop-blur-md rounded-xl sm:rounded-2xl p-3 sm:p-6 border border-white/20 text-center transform hover:scale-105 transition-all duration-300">
+            <div class="text-2xl sm:text-4xl mb-2 sm:mb-3">🔥</div>
+            <div class="text-xl sm:text-3xl font-bold text-red-400">{{ recordWPM }}</div>
+            <div class="text-xs sm:text-sm text-gray-300 mt-1">World Record</div>
           </div>
         </div>
 
         <!-- Filter & Search Section -->
-        <div
-          class="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 mb-8"
-        >
-          <div
-            class="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0 lg:space-x-6"
-          >
+        <div class="bg-white/10 backdrop-blur-md rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-white/20 mb-6 sm:mb-8">
+          <div class="flex flex-col space-y-4">
             <!-- Time Period Filter -->
-            <div class="flex space-x-2">
+            <div class="flex flex-wrap gap-2 justify-center sm:justify-start">
               <button
                 v-for="period in timePeriods"
                 :key="period.value"
                 @click="selectedPeriod = period.value"
-                :class="
-                  selectedPeriod === period.value
-                    ? 'bg-yellow-500 text-gray-900'
-                    : 'bg-gray-700 hover:bg-gray-600'
-                "
-                class="px-4 py-2 rounded-xl font-medium transition-all duration-300"
+                :class="selectedPeriod === period.value ? 'bg-yellow-500 text-gray-900' : 'bg-gray-700 hover:bg-gray-600'"
+                class="px-3 py-2 sm:px-4 text-xs sm:text-sm rounded-xl font-medium transition-all duration-300"
               >
                 {{ period.label }}
               </button>
             </div>
 
             <!-- Category Filter -->
-            <div class="flex space-x-2">
+            <div class="flex flex-wrap gap-2 justify-center sm:justify-start">
               <button
                 v-for="category in categories"
                 :key="category.value"
                 @click="selectedCategory = category.value"
-                :class="
-                  selectedCategory === category.value
-                    ? 'bg-purple-500 text-white'
-                    : 'bg-gray-700 hover:bg-gray-600'
-                "
-                class="px-4 py-2 rounded-xl font-medium transition-all duration-300"
+                :class="selectedCategory === category.value ? 'bg-purple-500 text-white' : 'bg-gray-700 hover:bg-gray-600'"
+                class="px-3 py-2 sm:px-4 text-xs sm:text-sm rounded-xl font-medium transition-all duration-300"
               >
-                <i :class="category.icon" class="mr-2"></i>
+                <i :class="category.icon" class="mr-1 sm:mr-2"></i>
                 {{ category.label }}
               </button>
             </div>
 
             <!-- Search -->
-            <div class="relative flex-1 max-w-md">
+            <div class="relative w-full max-w-md mx-auto sm:mx-0">
               <input
                 v-model="searchQuery"
                 type="text"
                 placeholder="Search players..."
-                class="w-full px-4 py-2 pl-10 bg-gray-900/70 text-white rounded-xl border border-gray-600 focus:border-yellow-400 focus:outline-none transition-all duration-300"
+                class="w-full px-4 py-2 pl-10 bg-gray-900/70 text-white rounded-xl border border-gray-600 focus:border-yellow-400 focus:outline-none transition-all duration-300 text-sm sm:text-base"
               />
-              <i
-                class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-              ></i>
+              <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
             </div>
           </div>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
           <!-- Main Leaderboard -->
           <div class="lg:col-span-2">
             <!-- Top 3 Podium -->
-            <div
-              class="bg-white/10 backdrop-blur-md rounded-3xl p-8 border border-white/20 mb-8"
-            >
-              <h3
-                class="text-2xl font-bold text-center mb-8 flex items-center justify-center"
-              >
-                <i class="fas fa-crown text-yellow-400 mr-3"></i>
+            <div class="bg-white/10 backdrop-blur-md rounded-2xl sm:rounded-3xl p-4 sm:p-8 border border-white/20 mb-6 sm:mb-8">
+              <h3 class="text-xl sm:text-2xl font-bold text-center mb-6 sm:mb-8 flex items-center justify-center">
+                <i class="fas fa-crown text-yellow-400 mr-2 sm:mr-3"></i>
                 Champions Podium
               </h3>
 
-              <div class="flex justify-center items-end space-x-4 mb-8">
+              <div class="flex justify-center items-end space-x-2 sm:space-x-4 mb-6 sm:mb-8">
                 <!-- Second Place -->
-                <div
-                  v-if="topPlayers[1]"
-                  class="text-center transform hover:scale-105 transition-all duration-300"
-                >
+                <div v-if="topPlayers[1]" class="text-center transform hover:scale-105 transition-all duration-300">
                   <div class="relative">
-                    <div
-                      class="w-24 h-24 rounded-full bg-gradient-to-r from-gray-400 to-gray-500 flex items-center justify-center text-2xl font-bold mb-2 border-4 border-gray-300 shadow-lg"
-                    >
+                    <div class="w-16 h-16 sm:w-24 sm:h-24 rounded-full bg-gradient-to-r from-gray-400 to-gray-500 flex items-center justify-center text-sm sm:text-2xl font-bold mb-2 border-2 sm:border-4 border-gray-300 shadow-lg">
                       {{ getInitials(topPlayers[1].name) }}
                     </div>
-                    <div
-                      class="absolute -top-2 -right-2 w-8 h-8 bg-gray-400 rounded-full flex items-center justify-center text-gray-900 font-bold text-sm"
-                    >
+                    <div class="absolute -top-1 -right-1 sm:-top-2 sm:-right-2 w-6 h-6 sm:w-8 sm:h-8 bg-gray-400 rounded-full flex items-center justify-center text-gray-900 font-bold text-xs sm:text-sm">
                       2
                     </div>
                   </div>
-                  <div
-                    class="bg-gray-400/20 rounded-xl p-3 border border-gray-400/30"
-                  >
-                    <div class="font-bold text-gray-300">
-                      {{ topPlayers[1].name }}
-                    </div>
-                    <div class="text-2xl font-bold text-gray-400">
-                      {{ topPlayers[1].wpm }}
-                    </div>
+                  <div class="bg-gray-400/20 rounded-xl p-2 sm:p-3 border border-gray-400/30">
+                    <div class="font-bold text-gray-300 text-xs sm:text-base truncate">{{ topPlayers[1].name }}</div>
+                    <div class="text-lg sm:text-2xl font-bold text-gray-400">{{ topPlayers[1].wpm }}</div>
                     <div class="text-xs text-gray-400">WPM</div>
-                    <div class="text-xs text-gray-300">
-                      {{ topPlayers[1].accuracy }}% ACC
-                    </div>
+                    <div class="text-xs text-gray-300">{{ topPlayers[1].accuracy }}% ACC</div>
                   </div>
                 </div>
 
                 <!-- First Place -->
-                <div
-                  v-if="topPlayers[0]"
-                  class="text-center transform hover:scale-105 transition-all duration-300 -mt-8"
-                >
+                <div v-if="topPlayers[0]" class="text-center transform hover:scale-105 transition-all duration-300 -mt-4 sm:-mt-8">
                   <div class="relative">
-                    <div
-                      class="w-32 h-32 rounded-full bg-gradient-to-r from-yellow-400 to-orange-500 flex items-center justify-center text-3xl font-bold mb-2 border-4 border-yellow-300 shadow-2xl animate-pulse"
-                    >
+                    <div class="w-20 h-20 sm:w-32 sm:h-32 rounded-full bg-gradient-to-r from-yellow-400 to-orange-500 flex items-center justify-center text-lg sm:text-3xl font-bold mb-2 border-2 sm:border-4 border-yellow-300 shadow-2xl animate-pulse">
                       {{ getInitials(topPlayers[0].name) }}
                     </div>
-                    <div
-                      class="absolute -top-2 -right-2 w-10 h-10 bg-yellow-400 rounded-full flex items-center justify-center text-gray-900 font-bold"
-                    >
+                    <div class="absolute -top-1 -right-1 sm:-top-2 sm:-right-2 w-8 h-8 sm:w-10 sm:h-10 bg-yellow-400 rounded-full flex items-center justify-center text-gray-900 font-bold text-sm sm:text-base">
                       👑
                     </div>
                   </div>
-                  <div
-                    class="bg-yellow-400/20 rounded-xl p-4 border border-yellow-400/30"
-                  >
-                    <div class="font-bold text-yellow-300">
-                      {{ topPlayers[0].name }}
-                    </div>
-                    <div class="text-3xl font-bold text-yellow-400">
-                      {{ topPlayers[0].wpm }}
-                    </div>
-                    <div class="text-sm text-yellow-300">WPM</div>
-                    <div class="text-sm text-yellow-300">
-                      {{ topPlayers[0].accuracy }}% ACC
-                    </div>
-                    <div class="text-xs text-yellow-200 mt-2">
-                      {{ topPlayers[0].country }} 🏆
-                    </div>
+                  <div class="bg-yellow-400/20 rounded-xl p-3 sm:p-4 border border-yellow-400/30">
+                    <div class="font-bold text-yellow-300 text-sm sm:text-base truncate">{{ topPlayers[0].name }}</div>
+                    <div class="text-2xl sm:text-3xl font-bold text-yellow-400">{{ topPlayers[0].wpm }}</div>
+                    <div class="text-xs sm:text-sm text-yellow-300">WPM</div>
+                    <div class="text-xs sm:text-sm text-yellow-300">{{ topPlayers[0].accuracy }}% ACC</div>
+                    <div class="text-xs text-yellow-200 mt-1 sm:mt-2">{{ topPlayers[0].country }} 🏆</div>
                   </div>
                 </div>
 
                 <!-- Third Place -->
-                <div
-                  v-if="topPlayers[2]"
-                  class="text-center transform hover:scale-105 transition-all duration-300"
-                >
+                <div v-if="topPlayers[2]" class="text-center transform hover:scale-105 transition-all duration-300">
                   <div class="relative">
-                    <div
-                      class="w-24 h-24 rounded-full bg-gradient-to-r from-amber-600 to-orange-700 flex items-center justify-center text-2xl font-bold mb-2 border-4 border-amber-400 shadow-lg"
-                    >
+                    <div class="w-16 h-16 sm:w-24 sm:h-24 rounded-full bg-gradient-to-r from-amber-600 to-orange-700 flex items-center justify-center text-sm sm:text-2xl font-bold mb-2 border-2 sm:border-4 border-amber-400 shadow-lg">
                       {{ getInitials(topPlayers[2].name) }}
                     </div>
-                    <div
-                      class="absolute -top-2 -right-2 w-8 h-8 bg-amber-600 rounded-full flex items-center justify-center text-white font-bold text-sm"
-                    >
+                    <div class="absolute -top-1 -right-1 sm:-top-2 sm:-right-2 w-6 h-6 sm:w-8 sm:h-8 bg-amber-600 rounded-full flex items-center justify-center text-white font-bold text-xs sm:text-sm">
                       3
                     </div>
                   </div>
-                  <div
-                    class="bg-amber-600/20 rounded-xl p-3 border border-amber-400/30"
-                  >
-                    <div class="font-bold text-amber-300">
-                      {{ topPlayers[2].name }}
-                    </div>
-                    <div class="text-2xl font-bold text-amber-400">
-                      {{ topPlayers[2].wpm }}
-                    </div>
+                  <div class="bg-amber-600/20 rounded-xl p-2 sm:p-3 border border-amber-400/30">
+                    <div class="font-bold text-amber-300 text-xs sm:text-base truncate">{{ topPlayers[2].name }}</div>
+                    <div class="text-lg sm:text-2xl font-bold text-amber-400">{{ topPlayers[2].wpm }}</div>
                     <div class="text-xs text-amber-300">WPM</div>
-                    <div class="text-xs text-amber-300">
-                      {{ topPlayers[2].accuracy }}% ACC
-                    </div>
+                    <div class="text-xs text-amber-300">{{ topPlayers[2].accuracy }}% ACC</div>
                   </div>
                 </div>
               </div>
             </div>
 
             <!-- Full Leaderboard -->
-            <div
-              class="bg-white/10 backdrop-blur-md rounded-3xl border border-white/20 overflow-hidden"
-            >
-              <div class="p-6 border-b border-white/20">
-                <h3 class="text-2xl font-bold flex items-center">
-                  <i class="fas fa-list-ol text-purple-400 mr-3"></i>
-                  {{
-                    selectedCategory === "wpm"
-                      ? "Speed"
-                      : selectedCategory === "accuracy"
-                      ? "Accuracy"
-                      : "Overall"
-                  }}
-                  Rankings
+            <div class="bg-white/10 backdrop-blur-md rounded-2xl sm:rounded-3xl border border-white/20 overflow-hidden">
+              <div class="p-4 sm:p-6 border-b border-white/20">
+                <h3 class="text-lg sm:text-2xl font-bold flex items-center">
+                  <i class="fas fa-list-ol text-purple-400 mr-2 sm:mr-3"></i>
+                  {{ selectedCategory === 'wpm' ? 'Speed' : selectedCategory === 'accuracy' ? 'Accuracy' : 'Overall' }} Rankings
                 </h3>
-                <p class="text-gray-300 mt-1">{{ getPeriodDescription() }}</p>
+                <p class="text-sm sm:text-base text-gray-300 mt-1">{{ getPeriodDescription() }}</p>
               </div>
 
-              <div class="max-h-96 overflow-y-auto">
+              <div class="max-h-80 sm:max-h-96 overflow-y-auto">
                 <div
                   v-for="(player, index) in filteredLeaderboard"
                   :key="player.id"
-                  :class="
-                    player.isCurrentUser
-                      ? 'bg-yellow-400/20 border-yellow-400/50'
-                      : 'hover:bg-white/5'
-                  "
-                  class="flex items-center p-4 border-b border-white/10 transition-all duration-300 cursor-pointer"
+                  :class="player.isCurrentUser ? 'bg-yellow-400/20 border-yellow-400/50' : 'hover:bg-white/5'"
+                  class="flex items-center p-3 sm:p-4 border-b border-white/10 transition-all duration-300 cursor-pointer"
                   @click="viewProfile(player)"
                 >
                   <!-- Rank -->
-                  <div class="flex items-center justify-center w-12 h-12 mr-4">
-                    <div v-if="index + 4 <= 3" class="text-2xl">
-                      {{
-                        index + 4 === 1 ? "🥇" : index + 4 === 2 ? "🥈" : "🥉"
-                      }}
+                  <div class="flex items-center justify-center w-8 h-8 sm:w-12 sm:h-12 mr-2 sm:mr-4">
+                    <div v-if="index + 4 <= 3" class="text-lg sm:text-2xl">
+                      {{ index + 4 === 1 ? '🥇' : index + 4 === 2 ? '🥈' : '🥉' }}
                     </div>
                     <div
                       v-else
-                      :class="
-                        player.isCurrentUser
-                          ? 'bg-yellow-400 text-gray-900'
-                          : 'bg-gray-700'
-                      "
-                      class="w-10 h-10 rounded-full flex items-center justify-center font-bold"
+                      :class="player.isCurrentUser ? 'bg-yellow-400 text-gray-900' : 'bg-gray-700'"
+                      class="w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center font-bold text-xs sm:text-sm"
                     >
                       {{ index + 4 }}
                     </div>
@@ -338,42 +210,26 @@
                   <!-- Avatar & Name -->
                   <div class="flex items-center flex-1 min-w-0">
                     <div
-                      :class="
-                        player.isCurrentUser
-                          ? 'from-yellow-400 to-orange-500'
-                          : 'from-purple-400 to-pink-500'
-                      "
-                      class="w-12 h-12 rounded-full bg-gradient-to-r flex items-center justify-center text-white font-bold mr-4 flex-shrink-0"
+                      :class="player.isCurrentUser ? 'from-yellow-400 to-orange-500' : 'from-purple-400 to-pink-500'"
+                      class="w-8 h-8 sm:w-12 sm:h-12 rounded-full bg-gradient-to-r flex items-center justify-center text-white font-bold mr-2 sm:mr-4 flex-shrink-0 text-xs sm:text-base"
                     >
                       {{ getInitials(player.name) }}
                     </div>
                     <div class="min-w-0 flex-1">
-                      <div class="flex items-center">
+                      <div class="flex items-center flex-wrap">
                         <h4
-                          :class="
-                            player.isCurrentUser
-                              ? 'text-yellow-300'
-                              : 'text-white'
-                          "
-                          class="font-bold truncate"
+                          :class="player.isCurrentUser ? 'text-yellow-300' : 'text-white'"
+                          class="font-bold truncate text-sm sm:text-base"
                         >
                           {{ player.name }}
                         </h4>
-                        <span
-                          v-if="player.isPremium"
-                          class="ml-2 text-yellow-400 text-sm"
-                          >👑</span
-                        >
-                        <span
-                          v-if="player.isCurrentUser"
-                          class="ml-2 text-yellow-400 text-sm font-medium"
-                          >(You)</span
-                        >
+                        <span v-if="player.isPremium" class="ml-1 sm:ml-2 text-yellow-400 text-xs sm:text-sm">👑</span>
+                        <span v-if="player.isCurrentUser" class="ml-1 sm:ml-2 text-yellow-400 text-xs font-medium">(You)</span>
                       </div>
-                      <div class="flex items-center text-sm text-gray-400">
+                      <div class="flex items-center text-xs sm:text-sm text-gray-400 flex-wrap">
                         <i class="fas fa-flag mr-1"></i>
-                        {{ player.country }}
-                        <span class="mx-2">•</span>
+                        <span class="mr-2">{{ player.country }}</span>
+                        <span class="mx-1 hidden sm:inline">•</span>
                         <i class="fas fa-calendar mr-1"></i>
                         {{ formatDate(player.lastActive) }}
                       </div>
@@ -381,60 +237,44 @@
                   </div>
 
                   <!-- Stats -->
-                  <div class="flex items-center space-x-6">
+                  <div class="flex items-center space-x-2 sm:space-x-6 flex-shrink-0">
                     <div class="text-center">
                       <div
-                        :class="
-                          selectedCategory === 'wpm'
-                            ? 'text-yellow-400'
-                            : 'text-white'
-                        "
-                        class="text-xl font-bold"
+                        :class="selectedCategory === 'wpm' ? 'text-yellow-400' : 'text-white'"
+                        class="text-sm sm:text-xl font-bold"
                       >
                         {{ player.wpm }}
                       </div>
                       <div class="text-xs text-gray-400">WPM</div>
                     </div>
-                    <div class="text-center">
+                    <div class="text-center hidden sm:block">
                       <div
-                        :class="
-                          selectedCategory === 'accuracy'
-                            ? 'text-green-400'
-                            : 'text-white'
-                        "
+                        :class="selectedCategory === 'accuracy' ? 'text-green-400' : 'text-white'"
                         class="text-xl font-bold"
                       >
                         {{ player.accuracy }}%
                       </div>
                       <div class="text-xs text-gray-400">ACC</div>
                     </div>
-                    <div class="text-center">
-                      <div class="text-xl font-bold text-purple-400">
-                        {{ player.level }}
-                      </div>
+                    <div class="text-center hidden md:block">
+                      <div class="text-xl font-bold text-purple-400">{{ player.level }}</div>
                       <div class="text-xs text-gray-400">LVL</div>
                     </div>
                   </div>
 
                   <!-- Trend -->
-                  <div class="ml-4">
-                    <div
-                      v-if="player.trend > 0"
-                      class="text-green-400 flex items-center"
-                    >
+                  <div class="ml-2 sm:ml-4 flex-shrink-0">
+                    <div v-if="player.trend > 0" class="text-green-400 flex items-center">
                       <i class="fas fa-arrow-up mr-1"></i>
-                      <span class="text-sm">+{{ player.trend }}</span>
+                      <span class="text-xs sm:text-sm">+{{ player.trend }}</span>
                     </div>
-                    <div
-                      v-else-if="player.trend < 0"
-                      class="text-red-400 flex items-center"
-                    >
+                    <div v-else-if="player.trend < 0" class="text-red-400 flex items-center">
                       <i class="fas fa-arrow-down mr-1"></i>
-                      <span class="text-sm">{{ player.trend }}</span>
+                      <span class="text-xs sm:text-sm">{{ player.trend }}</span>
                     </div>
                     <div v-else class="text-gray-400 flex items-center">
                       <i class="fas fa-minus mr-1"></i>
-                      <span class="text-sm">0</span>
+                      <span class="text-xs sm:text-sm">0</span>
                     </div>
                   </div>
                 </div>
@@ -445,10 +285,10 @@
                 <button
                   @click="loadMore"
                   :disabled="loading"
-                  class="px-6 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-medium rounded-xl hover:from-purple-500 hover:to-pink-500 disabled:opacity-50 transition-all duration-300"
+                  class="px-4 sm:px-6 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-medium rounded-xl hover:from-purple-500 hover:to-pink-500 disabled:opacity-50 transition-all duration-300 text-sm sm:text-base"
                 >
                   <span v-if="!loading">Load More Players</span>
-                  <span v-else class="flex items-center">
+                  <span v-else class="flex items-center justify-center">
                     <i class="fas fa-spinner fa-spin mr-2"></i>
                     Loading...
                   </span>
@@ -458,51 +298,39 @@
           </div>
 
           <!-- Sidebar -->
-          <div class="space-y-8">
+          <div class="space-y-6 sm:space-y-8">
             <!-- Your Ranking -->
-            <div
-              class="bg-white/10 backdrop-blur-md rounded-3xl p-6 border border-white/20"
-            >
-              <h3 class="text-xl font-bold mb-4 flex items-center">
-                <i class="fas fa-user text-yellow-400 mr-3"></i>
+            <div class="bg-white/10 backdrop-blur-md rounded-2xl sm:rounded-3xl p-4 sm:p-6 border border-white/20">
+              <h3 class="text-lg sm:text-xl font-bold mb-4 flex items-center">
+                <i class="fas fa-user text-yellow-400 mr-2 sm:mr-3"></i>
                 Your Ranking
               </h3>
               <div class="text-center">
-                <div
-                  class="w-20 h-20 rounded-full bg-gradient-to-r from-yellow-400 to-orange-500 flex items-center justify-center text-2xl font-bold mx-auto mb-4"
-                >
+                <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-r from-yellow-400 to-orange-500 flex items-center justify-center text-lg sm:text-2xl font-bold mx-auto mb-4">
                   {{ getInitials(currentUser.name) }}
                 </div>
-                <div class="text-2xl font-bold text-yellow-400 mb-2">
-                  #{{ currentUser.rank }}
-                </div>
-                <div class="text-gray-300 mb-4">{{ currentUser.name }}</div>
+                <div class="text-xl sm:text-2xl font-bold text-yellow-400 mb-2">#{{ currentUser.rank }}</div>
+                <div class="text-gray-300 mb-4 text-sm sm:text-base truncate">{{ currentUser.name }}</div>
                 <div class="grid grid-cols-2 gap-4 text-center">
                   <div>
-                    <div class="text-xl font-bold">{{ currentUser.wpm }}</div>
+                    <div class="text-lg sm:text-xl font-bold">{{ currentUser.wpm }}</div>
                     <div class="text-xs text-gray-400">WPM</div>
                   </div>
                   <div>
-                    <div class="text-xl font-bold">
-                      {{ currentUser.accuracy }}%
-                    </div>
+                    <div class="text-lg sm:text-xl font-bold">{{ currentUser.accuracy }}%</div>
                     <div class="text-xs text-gray-400">ACC</div>
                   </div>
                 </div>
-                <button
-                  class="mt-4 w-full py-2 bg-gradient-to-r from-yellow-500 to-orange-500 text-gray-900 font-bold rounded-xl hover:from-yellow-400 hover:to-orange-400 transition-all duration-300"
-                >
+                <button class="mt-4 w-full py-2 bg-gradient-to-r from-yellow-500 to-orange-500 text-gray-900 font-bold rounded-xl hover:from-yellow-400 hover:to-orange-400 transition-all duration-300 text-sm sm:text-base">
                   Improve Ranking
                 </button>
               </div>
             </div>
 
             <!-- Recent Achievements -->
-            <div
-              class="bg-white/10 backdrop-blur-md rounded-3xl p-6 border border-white/20"
-            >
-              <h3 class="text-xl font-bold mb-4 flex items-center">
-                <i class="fas fa-trophy text-purple-400 mr-3"></i>
+            <div class="bg-white/10 backdrop-blur-md rounded-2xl sm:rounded-3xl p-4 sm:p-6 border border-white/20">
+              <h3 class="text-lg sm:text-xl font-bold mb-4 flex items-center">
+                <i class="fas fa-trophy text-purple-400 mr-2 sm:mr-3"></i>
                 Recent Achievements
               </h3>
               <div class="space-y-3">
@@ -511,66 +339,49 @@
                   :key="achievement.id"
                   class="flex items-center p-3 bg-white/5 rounded-xl border border-white/10"
                 >
-                  <div class="text-2xl mr-3">{{ achievement.emoji }}</div>
-                  <div class="flex-1">
-                    <div class="font-medium text-sm">
-                      {{ achievement.title }}
-                    </div>
-                    <div class="text-xs text-gray-400">
-                      {{ achievement.player }}
-                    </div>
+                  <div class="text-xl sm:text-2xl mr-3 flex-shrink-0">{{ achievement.emoji }}</div>
+                  <div class="flex-1 min-w-0">
+                    <div class="font-medium text-xs sm:text-sm truncate">{{ achievement.title }}</div>
+                    <div class="text-xs text-gray-400 truncate">{{ achievement.player }}</div>
                   </div>
-                  <div class="text-xs text-gray-400">
-                    {{ achievement.timeAgo }}
-                  </div>
+                  <div class="text-xs text-gray-400 flex-shrink-0">{{ achievement.timeAgo }}</div>
                 </div>
               </div>
             </div>
 
             <!-- Weekly Challenge -->
-            <div
-              class="bg-gradient-to-br from-purple-600/20 to-pink-600/20 backdrop-blur-md rounded-3xl p-6 border border-purple-400/30"
-            >
-              <h3 class="text-xl font-bold mb-4 flex items-center">
-                <i class="fas fa-fire text-orange-400 mr-3"></i>
+            <div class="bg-gradient-to-br from-purple-600/20 to-pink-600/20 backdrop-blur-md rounded-2xl sm:rounded-3xl p-4 sm:p-6 border border-purple-400/30">
+              <h3 class="text-lg sm:text-xl font-bold mb-4 flex items-center">
+                <i class="fas fa-fire text-orange-400 mr-2 sm:mr-3"></i>
                 Weekly Challenge
               </h3>
               <div class="text-center">
-                <div class="text-3xl mb-2">🎯</div>
-                <div class="text-lg font-bold mb-2">Speed Sprint</div>
-                <div class="text-sm text-gray-300 mb-4">
-                  Type 100 words at 80+ WPM
-                </div>
+                <div class="text-2xl sm:text-3xl mb-2">🎯</div>
+                <div class="text-base sm:text-lg font-bold mb-2">Speed Sprint</div>
+                <div class="text-xs sm:text-sm text-gray-300 mb-4">Type 100 words at 80+ WPM</div>
                 <div class="bg-white/10 rounded-xl p-3 mb-4">
-                  <div class="flex justify-between text-sm mb-1">
+                  <div class="flex justify-between text-xs sm:text-sm mb-1">
                     <span>Progress</span>
                     <span>67/100</span>
                   </div>
                   <div class="w-full bg-gray-700 rounded-full h-2">
-                    <div
-                      class="bg-gradient-to-r from-purple-400 to-pink-400 h-2 rounded-full"
-                      style="width: 67%"
-                    ></div>
+                    <div class="bg-gradient-to-r from-purple-400 to-pink-400 h-2 rounded-full" style="width: 67%"></div>
                   </div>
                 </div>
-                <div class="text-sm text-gray-300 mb-4">
+                <div class="text-xs sm:text-sm text-gray-300 mb-4">
                   <i class="fas fa-clock mr-1"></i>
                   3 days remaining
                 </div>
-                <button
-                  class="w-full py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold rounded-xl hover:from-purple-500 hover:to-pink-500 transition-all duration-300"
-                >
+                <button class="w-full py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold rounded-xl hover:from-purple-500 hover:to-pink-500 transition-all duration-300 text-sm sm:text-base">
                   Join Challenge
                 </button>
               </div>
             </div>
 
             <!-- Country Rankings -->
-            <div
-              class="bg-white/10 backdrop-blur-md rounded-3xl p-6 border border-white/20"
-            >
-              <h3 class="text-xl font-bold mb-4 flex items-center">
-                <i class="fas fa-globe text-green-400 mr-3"></i>
+            <div class="bg-white/10 backdrop-blur-md rounded-2xl sm:rounded-3xl p-4 sm:p-6 border border-white/20">
+              <h3 class="text-lg sm:text-xl font-bold mb-4 flex items-center">
+                <i class="fas fa-globe text-green-400 mr-2 sm:mr-3"></i>
                 Top Countries
               </h3>
               <div class="space-y-3">
@@ -579,21 +390,17 @@
                   :key="country.code"
                   class="flex items-center justify-between"
                 >
-                  <div class="flex items-center">
-                    <div
-                      class="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center text-sm font-bold mr-3"
-                    >
+                  <div class="flex items-center min-w-0 flex-1">
+                    <div class="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-gray-700 flex items-center justify-center text-xs sm:text-sm font-bold mr-2 sm:mr-3 flex-shrink-0">
                       {{ index + 1 }}
                     </div>
-                    <div>
-                      <div class="font-medium">{{ country.name }}</div>
-                      <div class="text-xs text-gray-400">
-                        {{ country.players }} players
-                      </div>
+                    <div class="min-w-0 flex-1">
+                      <div class="font-medium text-sm sm:text-base truncate">{{ country.name }}</div>
+                      <div class="text-xs text-gray-400">{{ country.players }} players</div>
                     </div>
                   </div>
-                  <div class="text-right">
-                    <div class="font-bold">{{ country.avgWPM }}</div>
+                  <div class="text-right flex-shrink-0 ml-2">
+                    <div class="font-bold text-sm sm:text-base">{{ country.avgWPM }}</div>
                     <div class="text-xs text-gray-400">avg WPM</div>
                   </div>
                 </div>
@@ -604,13 +411,13 @@
       </div>
 
       <!-- Footer -->
-      <footer class="mt-16 text-center text-gray-400 py-8">
-        <div class="flex justify-center items-center space-x-4 mb-4">
+      <footer class="mt-12 sm:mt-16 text-center text-gray-400 py-6 sm:py-8">
+        <div class="flex justify-center items-center space-x-4 mb-4 flex-wrap">
           <i class="fas fa-heart text-red-400 animate-pulse"></i>
-          <span>Made with passion in Kenya</span>
+          <span class="text-sm sm:text-base">Made with passion in Kenya</span>
           <i class="fas fa-flag text-green-400"></i>
         </div>
-        <p>© 2025 Fast Fingers | Empowering typists worldwide</p>
+        <p class="text-sm sm:text-base">© 2025 Fast Fingers | Empowering typists worldwide</p>
       </footer>
     </div>
   </div>
@@ -898,60 +705,27 @@ export default {
 
 <style scoped>
 @keyframes blob {
-  0% {
-    transform: translate(0px, 0px) scale(1);
-  }
-  33% {
-    transform: translate(30px, -50px) scale(1.1);
-  }
-  66% {
-    transform: translate(-20px, 20px) scale(0.9);
-  }
-  100% {
-    transform: translate(0px, 0px) scale(1);
-  }
+  0% { transform: translate(0px, 0px) scale(1); }
+  33% { transform: translate(30px, -50px) scale(1.1); }
+  66% { transform: translate(-20px, 20px) scale(0.9); }
+  100% { transform: translate(0px, 0px) scale(1); }
 }
 
 @keyframes slide-down {
-  from {
-    opacity: 0;
-    transform: translateY(-30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(-30px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes pulse {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.7;
-  }
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
 }
 
-.animate-blob {
-  animation: blob 7s infinite;
-}
-
-.animation-delay-2000 {
-  animation-delay: 2s;
-}
-
-.animation-delay-4000 {
-  animation-delay: 4s;
-}
-
-.animate-slide-down {
-  animation: slide-down 0.8s ease-out;
-}
-
-.animate-pulse {
-  animation: pulse 2s ease-in-out infinite;
-}
+.animate-blob { animation: blob 7s infinite; }
+.animation-delay-2000 { animation-delay: 2s; }
+.animation-delay-4000 { animation-delay: 4s; }
+.animate-slide-down { animation: slide-down 0.8s ease-out; }
+.animate-pulse { animation: pulse 2s ease-in-out infinite; }
 
 /* Hover effects */
 .hover\:scale-105:hover {
@@ -963,128 +737,26 @@ export default {
 }
 
 /* Scrollbar styling */
-::-webkit-scrollbar {
-  width: 8px;
-}
-
+::-webkit-scrollbar { width: 8px; }
 ::-webkit-scrollbar-track {
   background: rgba(255, 255, 255, 0.1);
   border-radius: 4px;
 }
-
 ::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.3);
   border-radius: 4px;
 }
-
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.5);
 }
 
 /* Loading animation */
 @keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
-.fa-spin {
-  animation: spin 1s linear infinite;
-}
-
-/* Responsive design */
-@media (max-width: 768px) {
-  .text-8xl {
-    font-size: 4rem;
-  }
-
-  .text-5xl {
-    font-size: 2.5rem;
-  }
-
-  .grid-cols-4 {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .lg\:grid-cols-3 {
-    grid-template-columns: 1fr;
-  }
-
-  .lg\:col-span-2 {
-    grid-column: span 1;
-  }
-
-  .flex-col {
-    flex-direction: column;
-  }
-
-  .lg\:flex-row {
-    flex-direction: column;
-  }
-
-  .lg\:space-x-6 {
-    margin-left: 0;
-    margin-right: 0;
-  }
-
-  .lg\:space-x-6 > * + * {
-    margin-left: 0;
-    margin-top: 1rem;
-  }
-
-  .space-y-4 > * + * {
-    margin-top: 1rem;
-  }
-
-  .lg\:space-y-0 > * + * {
-    margin-top: 1rem;
-  }
-}
-
-@media (max-width: 640px) {
-  .w-32 {
-    width: 6rem;
-  }
-
-  .h-32 {
-    height: 6rem;
-  }
-
-  .w-24 {
-    width: 4rem;
-  }
-
-  .h-24 {
-    height: 4rem;
-  }
-
-  .text-3xl {
-    font-size: 1.5rem;
-  }
-
-  .text-2xl {
-    font-size: 1.25rem;
-  }
-
-  .p-8 {
-    padding: 1rem;
-  }
-
-  .p-6 {
-    padding: 1rem;
-  }
-
-  .space-x-4 > * + * {
-    margin-left: 0.5rem;
-  }
-
-  .space-x-6 > * + * {
-    margin-left: 1rem;
-  }
-}
+.fa-spin { animation: spin 1s linear infinite; }
 
 /* Focus states for accessibility */
 button:focus-visible,
@@ -1102,85 +774,38 @@ button:active {
   transform: scale(0.98);
 }
 
-/* Gradient text animation */
-@keyframes gradient-shift {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
+/* Responsive text sizing */
+@media (max-width: 640px) {
+  .truncate {
+    max-width: 120px;
   }
 }
 
-.bg-gradient-to-r {
-  background-size: 200% 200%;
-  animation: gradient-shift 3s ease infinite;
-}
-
-/* Trophy shine effect */
-@keyframes shine {
-  0% {
-    transform: translateX(-100%);
-  }
-  100% {
-    transform: translateX(100%);
+@media (max-width: 480px) {
+  .truncate {
+    max-width: 100px;
   }
 }
 
-.fa-trophy {
-  position: relative;
-  overflow: hidden;
-}
-
-.fa-trophy::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.3),
-    transparent
-  );
-  animation: shine 2s ease-in-out infinite;
-}
-
-/* Country flag spacing */
-.fa-flag {
-  margin-right: 0.25rem;
-}
-
-/* Leaderboard row hover effects */
-.cursor-pointer:hover {
-  background-color: rgba(255, 255, 255, 0.05);
-  border-left: 4px solid #fbbf24;
-  padding-left: 1rem;
-  transition: all 0.3s ease;
-}
-
-/* Achievement pulse effect */
-.recentAchievements .bg-white\/5 {
-  animation: pulse 3s ease-in-out infinite;
-}
-
-/* Premium crown animation */
-.fa-crown {
-  animation: bounce 2s ease-in-out infinite;
-}
-
-@keyframes bounce {
-  0%,
-  100% {
-    transform: translateY(0);
+/* Touch-friendly interactive elements on mobile */
+@media (max-width: 768px) {
+  button {
+    min-height: 44px;
   }
-  50% {
-    transform: translateY(-2px);
+  
+  .cursor-pointer {
+    min-height: 60px;
+  }
+}
+
+/* Improved spacing on smaller screens */
+@media (max-width: 640px) {
+  .space-x-2 > * + * {
+    margin-left: 0.25rem;
+  }
+  
+  .space-x-4 > * + * {
+    margin-left: 0.5rem;
   }
 }
 </style>

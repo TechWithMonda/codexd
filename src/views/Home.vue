@@ -21,7 +21,9 @@
         </div>
         <nav class="hidden sm:block">
           <ul class="flex space-x-8">
-            <li><a href="#" class="hover:text-yellow-400 transition-all duration-300 hover:scale-105">SignUp</a></li>
+            <router-link to="register">
+              <li><a href="#" class="hover:text-yellow-400 transition-all duration-300 hover:scale-105">SignUp</a></li>
+            </router-link>
             <router-link to="leaderboard">
               <li><a href="#" class="hover:text-yellow-400 transition-all duration-300 hover:scale-105">Leaderboard</a></li>
             </router-link>
@@ -31,6 +33,9 @@
                 <span class="absolute -top-2 -right-2 w-2 h-2 bg-yellow-400 rounded-full animate-ping"></span>
               </a>
             </li>
+            <router-link to="TermsAndCondition">
+              <li><a href="#" class="hover:text-yellow-400 transition-all duration-300 hover:scale-105">TermsAndCondition</a></li>
+            </router-link>
           </ul>
         </nav>
         <!-- Mobile menu button -->
@@ -43,9 +48,11 @@
       <transition name="slide-down">
         <div v-if="showMobileMenu" class="sm:hidden bg-white/10 backdrop-blur-md mx-3 rounded-2xl mb-4 p-4 border border-white/20">
           <ul class="space-y-3">
- <router-link to="register">
-              <li><a href="#" class="hover:text-yellow-400 transition-all duration-300 hover:scale-105">SignUp</a></li>
-            </router-link>
+
+              <router-link to="register">
+                <li><a href="#" class="hover:text-yellow-400 transition-all duration-300 hover:scale-105">SignUp</a></li>
+              </router-link>
+          
  <router-link to="leaderboard">
               <li><a href="#" class="hover:text-yellow-400 transition-all duration-300 hover:scale-105">Leaderboard</a></li>
             </router-link>

@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Home from '../views/Home.vue'
 import Register from '@/views/Register.vue'
 import Leaderboard from '../views/Leaderboard.vue'
+import TermsAndCondition from '@/views/TermsAndCondition.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -15,6 +16,11 @@ const router = createRouter({
       path: '/leaderboard',
       name: 'leaderboard',
       component: Leaderboard,
+    },
+    {
+      path: '/TermsAndCondition',
+      name: 'TermsAndCondition',
+      component: TermsAndCondition,
     },
       {
       path: '/register',
