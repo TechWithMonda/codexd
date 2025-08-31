@@ -56,7 +56,6 @@
  <router-link to="leaderboard">
               <li><a href="#" class="hover:text-yellow-400 transition-all duration-300 hover:scale-105">Leaderboard</a></li>
             </router-link>
-           
            <li><a href="#" class="block hover:text-yellow-400 transition-all duration-300">Upgrade</a></li>
           <router-link to="TermsAndCondition">
               <li><a href="#" class="hover:text-yellow-400 transition-all duration-300 hover:scale-105">TermsAndCondition</a></li>

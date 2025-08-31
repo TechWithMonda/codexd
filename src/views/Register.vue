@@ -9,96 +9,192 @@
 
     <div class="relative z-10">
       <!-- Header -->
-      <header class="flex justify-between items-center p-6 backdrop-blur-sm">
+      <header class="flex justify-between items-center p-4 md:p-6 backdrop-blur-sm">
         <div class="flex items-center space-x-3">
           <div class="w-10 h-10 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-xl flex items-center justify-center text-2xl animate-pulse">
             ⚡
           </div>
-          <h1 class="text-3xl font-bold bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">
+          <h1 class="text-2xl md:text-3xl font-bold bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">
             Fast Fingers
           </h1>
         </div>
-        <nav>
-          <ul class="flex space-x-8">
+        
+        <!-- Desktop Navigation -->
+        <nav class="hidden md:block">
+          <ul class="flex space-x-4 lg:space-x-8">
             <router-link to="/">
-              <li><a href="#" class="hover:text-yellow-400 transition-all duration-300 hover:scale-105">Home</a></li>
+              <li><a href="#" class="hover:text-yellow-400 transition-all duration-300 hover:scale-105">Play Without Signing Up</a></li>
             </router-link>
             <router-link to="TermsAndCondition">
-              <li><a href="#" class="hover:text-yellow-400 transition-all duration-300 hover:scale-105">TermsAndCondition</a></li>
+              <li><a href="#" class="hover:text-yellow-400 transition-all duration-300 hover:scale-105">Terms</a></li>
             </router-link>
             <li><a href="#" @click="showLogin = true" class="hover:text-yellow-400 transition-all duration-300 hover:scale-105 cursor-pointer">Login</a></li>
           </ul>
         </nav>
+        
+        <!-- Mobile Hamburger Menu -->
+        <button 
+          @click="mobileMenuOpen = !mobileMenuOpen"
+          class="md:hidden p-2 rounded-lg hover:bg-white/10 transition-colors"
+          aria-label="Toggle menu"
+        >
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path 
+              v-if="!mobileMenuOpen" 
+              stroke-linecap="round" 
+              stroke-linejoin="round" 
+              stroke-width="2" 
+              d="M4 6h16M4 12h16M4 18h16"
+            />
+            <path 
+              v-else 
+              stroke-linecap="round" 
+              stroke-linejoin="round" 
+              stroke-width="2" 
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+        </button>
       </header>
 
-      <div class="max-w-6xl mx-auto px-6 py-8">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      <!-- Mobile Menu Overlay -->
+      <transition
+        enter-active-class="transition-opacity duration-300"
+        enter-from-class="opacity-0"
+        enter-to-class="opacity-100"
+        leave-active-class="transition-opacity duration-300"
+        leave-from-class="opacity-100"
+        leave-to-class="opacity-0"
+      >
+        <div 
+          v-if="mobileMenuOpen" 
+          class="fixed inset-0 bg-black/70 backdrop-blur-sm z-40 md:hidden"
+          @click="mobileMenuOpen = false"
+        ></div>
+      </transition>
+
+      <!-- Mobile Menu Slide-in -->
+      <transition
+        enter-active-class="transition-transform duration-300"
+        enter-from-class="translate-x-full"
+        enter-to-class="translate-x-0"
+        leave-active-class="transition-transform duration-300"
+        leave-from-class="translate-x-0"
+        leave-to-class="translate-x-full"
+      >
+        <div 
+          v-if="mobileMenuOpen" 
+          class="fixed top-0 right-0 h-full w-64 bg-slate-900/95 backdrop-blur-md z-50 p-6 border-l border-white/20 md:hidden"
+        >
+          <div class="flex justify-between items-center mb-10">
+            <h2 class="text-xl font-bold text-yellow-400">Menu</h2>
+            <button @click="mobileMenuOpen = false" class="p-1 rounded-full hover:bg-white/10">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+          
+          <ul class="space-y-6">
+            <li>
+              <router-link to="/" class="block py-2 text-lg hover:text-yellow-400 transition-colors" @click="mobileMenuOpen = false">
+                Home
+              </router-link>
+            </li>
+            <li>
+              <router-link to="TermsAndCondition" class="block py-2 text-lg hover:text-yellow-400 transition-colors" @click="mobileMenuOpen = false">
+                Terms & Conditions
+              </router-link>
+            </li>
+            <li>
+              <a href="#" @click="showLogin = true; mobileMenuOpen = false" class="block py-2 text-lg hover:text-yellow-400 transition-colors cursor-pointer">
+                Login
+              </a>
+            </li>
+            <li class="pt-6 border-t border-white/20">
+              <button 
+                @click="scrollToSignUp"
+                class="w-full py-3 bg-gradient-to-r from-yellow-500 to-orange-500 text-gray-900 font-bold rounded-xl hover:from-yellow-400 hover:to-orange-400 transition-all duration-300"
+              >
+                Sign Up Now
+              </button>
+            </li>
+          </ul>
+          
+          <div class="absolute bottom-6 left-6 right-6 text-center text-sm text-gray-400">
+            <p>© 2025 Fast Fingers</p>
+          </div>
+        </div>
+      </transition>
+
+      <div class="max-w-6xl mx-auto px-4 md:px-6 py-6 md:py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-center">
           
           <!-- Left Side - Marketing Content -->
-          <div class="space-y-8 animate-slide-right">
+          <div class="space-y-6 md:space-y-8 animate-slide-right">
             <!-- Hero Section -->
             <div>
-              <h2 class="text-6xl font-bold mb-6 bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 bg-clip-text text-transparent leading-tight">
+              <h2 class="text-4xl sm:text-5xl md:text-6xl font-bold mb-4 md:mb-6 bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 bg-clip-text text-transparent leading-tight">
                 Master Your Typing Speed
               </h2>
-              <p class="text-xl text-gray-300 mb-8 leading-relaxed">
+              <p class="text-lg md:text-xl text-gray-300 mb-6 md:mb-8 leading-relaxed">
                 Join thousands of users who've transformed their typing skills with our gamified learning platform. 
                 Track progress, compete globally, and unlock your potential!
               </p>
             </div>
 
             <!-- Features Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div class="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 transform hover:scale-105 transition-all duration-300">
-                <div class="text-4xl mb-4">🚀</div>
-                <h3 class="text-xl font-bold mb-2">Boost Speed</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
+              <div class="bg-white/10 backdrop-blur-md rounded-2xl p-4 md:p-6 border border-white/20 transform hover:scale-105 transition-all duration-300">
+                <div class="text-3xl md:text-4xl mb-3 md:mb-4">🚀</div>
+                <h3 class="text-lg md:text-xl font-bold mb-2">Boost Speed</h3>
                 <p class="text-gray-300 text-sm">Increase your WPM with personalized challenges and real-time feedback</p>
               </div>
               
-              <div class="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 transform hover:scale-105 transition-all duration-300">
-                <div class="text-4xl mb-4">🎯</div>
-                <h3 class="text-xl font-bold mb-2">Perfect Accuracy</h3>
+              <div class="bg-white/10 backdrop-blur-md rounded-2xl p-4 md:p-6 border border-white/20 transform hover:scale-105 transition-all duration-300">
+                <div class="text-3xl md:text-4xl mb-3 md:mb-4">🎯</div>
+                <h3 class="text-lg md:text-xl font-bold mb-2">Perfect Accuracy</h3>
                 <p class="text-gray-300 text-sm">Train muscle memory with adaptive difficulty and smart corrections</p>
               </div>
               
-              <div class="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 transform hover:scale-105 transition-all duration-300">
-                <div class="text-4xl mb-4">🏆</div>
-                <h3 class="text-xl font-bold mb-2">Global Rankings</h3>
+              <div class="bg-white/10 backdrop-blur-md rounded-2xl p-4 md:p-6 border border-white/20 transform hover:scale-105 transition-all duration-300">
+                <div class="text-3xl md:text-4xl mb-3 md:mb-4">🏆</div>
+                <h3 class="text-lg md:text-xl font-bold mb-2">Global Rankings</h3>
                 <p class="text-gray-300 text-sm">Compete with typists worldwide and climb the leaderboard</p>
               </div>
               
-              <div class="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 transform hover:scale-105 transition-all duration-300">
-                <div class="text-4xl mb-4">📊</div>
-                <h3 class="text-xl font-bold mb-2">Progress Analytics</h3>
+              <div class="bg-white/10 backdrop-blur-md rounded-2xl p-4 md:p-6 border border-white/20 transform hover:scale-105 transition-all duration-300">
+                <div class="text-3xl md:text-4xl mb-3 md:mb-4">📊</div>
+                <h3 class="text-lg md:text-xl font-bold mb-2">Progress Analytics</h3>
                 <p class="text-gray-300 text-sm">Detailed insights into your improvement journey and weak areas</p>
               </div>
             </div>
 
             <!-- Social Proof -->
-            <div class="bg-gradient-to-r from-green-500/20 to-emerald-500/20 backdrop-blur-md rounded-2xl p-6 border border-green-400/30">
+            <div class="bg-gradient-to-r from-green-500/20 to-emerald-500/20 backdrop-blur-md rounded-2xl p-4 md:p-6 border border-green-400/30">
               <div class="flex items-center mb-4">
-                <div class="flex -space-x-3">
-                  <div class="w-10 h-10 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full border-2 border-white flex items-center justify-center text-sm font-bold">A</div>
-                  <div class="w-10 h-10 bg-gradient-to-r from-purple-400 to-pink-500 rounded-full border-2 border-white flex items-center justify-center text-sm font-bold">M</div>
-                  <div class="w-10 h-10 bg-gradient-to-r from-blue-400 to-cyan-500 rounded-full border-2 border-white flex items-center justify-center text-sm font-bold">S</div>
-                  <div class="w-10 h-10 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full border-2 border-white flex items-center justify-center text-sm font-bold text-white">+</div>
+                <div class="flex -space-x-2 md:-space-x-3">
+                  <div class="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full border-2 border-white flex items-center justify-center text-xs md:text-sm font-bold">A</div>
+                  <div class="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-r from-purple-400 to-pink-500 rounded-full border-2 border-white flex items-center justify-center text-xs md:text-sm font-bold">M</div>
+                  <div class="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-r from-blue-400 to-cyan-500 rounded-full border-2 border-white flex items-center justify-center text-xs md:text-sm font-bold">S</div>
+                  <div class="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full border-2 border-white flex items-center justify-center text-xs md:text-sm font-bold text-white">+</div>
                 </div>
-                <div class="ml-4">
-                  <p class="font-bold text-green-300">25,000+ Active Users</p>
-                  <p class="text-sm text-gray-300">Joined this month</p>
+                <div class="ml-3 md:ml-4">
+                  <p class="font-bold text-green-300 text-sm md:text-base">25,000+ Active Users</p>
+                  <p class="text-xs md:text-sm text-gray-300">Joined this month</p>
                 </div>
               </div>
-              <div class="grid grid-cols-3 gap-4 text-center">
+              <div class="grid grid-cols-3 gap-3 md:gap-4 text-center">
                 <div>
-                  <div class="text-2xl font-bold text-green-400">150M+</div>
+                  <div class="text-xl md:text-2xl font-bold text-green-400">150M+</div>
                   <div class="text-xs text-gray-300">Words Typed</div>
                 </div>
                 <div>
-                  <div class="text-2xl font-bold text-blue-400">4.9★</div>
+                  <div class="text-xl md:text-2xl font-bold text-blue-400">4.9★</div>
                   <div class="text-xs text-gray-300">User Rating</div>
                 </div>
                 <div>
-                  <div class="text-2xl font-bold text-purple-400">92%</div>
+                  <div class="text-xl md:text-2xl font-bold text-purple-400">92%</div>
                   <div class="text-xs text-gray-300">See Improvement</div>
                 </div>
               </div>
@@ -106,14 +202,14 @@
           </div>
 
           <!-- Right Side - Sign Up Form -->
-          <div class="bg-white/10 backdrop-blur-md rounded-3xl p-8 border border-white/20 shadow-2xl animate-slide-left">
-            <div class="text-center mb-8">
-              <div class="text-6xl mb-4">🎮</div>
-              <h3 class="text-3xl font-bold mb-2">Start Your Journey</h3>
-              <p class="text-gray-300">Create your account and begin mastering your typing skills</p>
+          <div id="signup-form" class="bg-white/10 backdrop-blur-md rounded-3xl p-6 md:p-8 border border-white/20 shadow-2xl animate-slide-left">
+            <div class="text-center mb-6 md:mb-8">
+              <div class="text-5xl md:text-6xl mb-3 md:mb-4">🎮</div>
+              <h3 class="text-2xl md:text-3xl font-bold mb-2">Start Your Journey</h3>
+              <p class="text-gray-300 text-sm md:text-base">Create your account and begin mastering your typing skills</p>
             </div>
 
-            <form @submit.prevent="handleSignUp" class="space-y-6">
+            <form @submit.prevent="handleSignUp" class="space-y-4 md:space-y-6">
               <!-- Full Name -->
               <div class="space-y-2">
                 <label class="block text-sm font-medium text-gray-300">Full Name</label>
@@ -190,38 +286,38 @@
               </div>
 
               <!-- Plan Selection -->
-              <div class="space-y-4">
+              <div class="space-y-3 md:space-y-4">
                 <label class="block text-sm font-medium text-gray-300">Choose Your Plan</label>
-                <div class="grid grid-cols-1 gap-3">
+                <div class="grid grid-cols-1 gap-2 md:gap-3">
                   <div 
                     @click="formData.plan = 'free'"
                     :class="formData.plan === 'free' ? 'border-green-400 bg-green-400/10' : 'border-gray-600'"
-                    class="border-2 rounded-xl p-4 cursor-pointer transition-all duration-300 hover:border-green-400/50"
+                    class="border-2 rounded-xl p-3 md:p-4 cursor-pointer transition-all duration-300 hover:border-green-400/50"
                   >
                     <div class="flex justify-between items-center">
                       <div>
-                        <h4 class="font-bold text-green-400">Free Starter</h4>
-                        <p class="text-sm text-gray-300">5 games per day</p>
+                        <h4 class="font-bold text-green-400 text-sm md:text-base">Free Starter</h4>
+                        <p class="text-xs md:text-sm text-gray-300">5 games per day</p>
                       </div>
-                      <div class="text-2xl font-bold">FREE</div>
+                      <div class="text-xl md:text-2xl font-bold">FREE</div>
                     </div>
                   </div>
                   
                   <div 
                     @click="formData.plan = 'premium'"
                     :class="formData.plan === 'premium' ? 'border-yellow-400 bg-yellow-400/10' : 'border-gray-600'"
-                    class="border-2 rounded-xl p-4 cursor-pointer transition-all duration-300 hover:border-yellow-400/50 relative overflow-hidden"
+                    class="border-2 rounded-xl p-3 md:p-4 cursor-pointer transition-all duration-300 hover:border-yellow-400/50 relative overflow-hidden"
                   >
-                    <div class="absolute top-2 right-2 bg-yellow-400 text-gray-900 text-xs font-bold px-2 py-1 rounded-full">
+                    <div class="absolute top-1 right-1 md:top-2 md:right-2 bg-yellow-400 text-gray-900 text-xs font-bold px-2 py-1 rounded-full">
                       POPULAR
                     </div>
                     <div class="flex justify-between items-center">
                       <div>
-                        <h4 class="font-bold text-yellow-400">Premium Pro</h4>
-                        <p class="text-sm text-gray-300">Unlimited games + extras</p>
+                        <h4 class="font-bold text-yellow-400 text-sm md:text-base">Premium Pro</h4>
+                        <p class="text-xs md:text-sm text-gray-300">Unlimited games + extras</p>
                       </div>
                       <div>
-                        <div class="text-2xl font-bold text-yellow-400">50 KSh</div>
+                        <div class="text-xl md:text-2xl font-bold text-yellow-400">50 KSh</div>
                         <div class="text-xs text-gray-400">/month</div>
                       </div>
                     </div>
@@ -235,9 +331,9 @@
                   v-model="formData.agreeToTerms"
                   type="checkbox" 
                   required
-                  class="mt-1 w-5 h-5 text-yellow-400 bg-gray-900 border-gray-600 rounded focus:ring-yellow-400 focus:ring-2"
+                  class="mt-1 w-4 h-4 md:w-5 md:h-5 text-yellow-400 bg-gray-900 border-gray-600 rounded focus:ring-yellow-400 focus:ring-2"
                 />
-                <label class="text-sm text-gray-300 leading-5">
+                <label class="text-xs md:text-sm text-gray-300 leading-5">
                   I agree to the <a href="#" class="text-yellow-400 hover:underline">Terms of Service</a> and 
                   <a href="#" class="text-yellow-400 hover:underline">Privacy Policy</a>
                 </label>
@@ -248,16 +344,16 @@
                 <input 
                   v-model="formData.newsletter"
                   type="checkbox" 
-                  class="w-5 h-5 text-yellow-400 bg-gray-900 border-gray-600 rounded focus:ring-yellow-400 focus:ring-2"
+                  class="w-4 h-4 md:w-5 md:h-5 text-yellow-400 bg-gray-900 border-gray-600 rounded focus:ring-yellow-400 focus:ring-2"
                 />
-                <label class="text-sm text-gray-300">Subscribe to typing tips and updates</label>
+                <label class="text-xs md:text-sm text-gray-300">Subscribe to typing tips and updates</label>
               </div>
 
               <!-- Submit Button -->
               <button 
                 type="submit"
                 :disabled="isLoading"
-                class="w-full py-4 bg-gradient-to-r from-yellow-500 to-orange-500 text-gray-900 font-bold text-lg rounded-xl hover:from-yellow-400 hover:to-orange-400 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-105 shadow-lg"
+                class="w-full py-3 md:py-4 bg-gradient-to-r from-yellow-500 to-orange-500 text-gray-900 font-bold text-base md:text-lg rounded-xl hover:from-yellow-400 hover:to-orange-400 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-105 shadow-lg"
               >
                 <span v-if="!isLoading" class="flex items-center justify-center">
                   <i class="fas fa-rocket mr-2"></i>
@@ -271,7 +367,7 @@
             </form>
 
             <!-- Social Login -->
-            <div class="mt-8">
+            <div class="mt-6 md:mt-8">
               <div class="relative">
                 <div class="absolute inset-0 flex items-center">
                   <div class="w-full border-t border-gray-600"></div>
@@ -281,21 +377,21 @@
                 </div>
               </div>
 
-              <div class="mt-6 grid grid-cols-2 gap-3">
-                <button class="w-full inline-flex justify-center py-3 px-4 rounded-xl border border-gray-600 bg-gray-900/50 text-sm font-medium text-white hover:bg-gray-800 transition-colors">
-                  <i class="fab fa-google mr-2 text-red-400"></i>
+              <div class="mt-4 md:mt-6 grid grid-cols-2 gap-3">
+                <button class="w-full inline-flex justify-center py-2 md:py-3 px-3 md:px-4 rounded-xl border border-gray-600 bg-gray-900/50 text-xs md:text-sm font-medium text-white hover:bg-gray-800 transition-colors">
+                  <i class="fab fa-google mr-1 md:mr-2 text-red-400"></i>
                   Google
                 </button>
-                <button class="w-full inline-flex justify-center py-3 px-4 rounded-xl border border-gray-600 bg-gray-900/50 text-sm font-medium text-white hover:bg-gray-800 transition-colors">
-                  <i class="fab fa-facebook mr-2 text-blue-400"></i>
+                <button class="w-full inline-flex justify-center py-2 md:py-3 px-3 md:px-4 rounded-xl border border-gray-600 bg-gray-900/50 text-xs md:text-sm font-medium text-white hover:bg-gray-800 transition-colors">
+                  <i class="fab fa-facebook mr-1 md:mr-2 text-blue-400"></i>
                   Facebook
                 </button>
               </div>
             </div>
 
             <!-- Login Link -->
-            <div class="mt-8 text-center">
-              <p class="text-gray-300">
+            <div class="mt-6 md:mt-8 text-center">
+              <p class="text-gray-300 text-sm md:text-base">
                 Already have an account? 
                 <a href="#" @click="showLogin = true" class="text-yellow-400 hover:underline font-medium cursor-pointer">
                   Sign in here
@@ -307,11 +403,11 @@
 
         <!-- Success Modal -->
         <transition name="modal">
-          <div v-if="showSuccess" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
-            <div class="bg-gray-900 rounded-3xl p-8 max-w-md mx-4 border border-white/20 text-center">
-              <div class="text-6xl mb-4">🎉</div>
-              <h3 class="text-2xl font-bold text-green-400 mb-4">Welcome to Fast Fingers!</h3>
-              <p class="text-gray-300 mb-6">
+          <div v-if="showSuccess" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div class="bg-gray-900 rounded-3xl p-6 md:p-8 max-w-md w-full border border-white/20 text-center">
+              <div class="text-5xl md:text-6xl mb-4">🎉</div>
+              <h3 class="text-xl md:text-2xl font-bold text-green-400 mb-4">Welcome to Fast Fingers!</h3>
+              <p class="text-gray-300 mb-6 text-sm md:text-base">
                 Your account has been created successfully. You can now start your typing journey!
               </p>
               <div class="space-y-3">
@@ -334,11 +430,11 @@
 
         <!-- Login Modal -->
         <transition name="modal">
-          <div v-if="showLogin" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
-            <div class="bg-gray-900 rounded-3xl p-8 max-w-md mx-4 border border-white/20">
+          <div v-if="showLogin" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div class="bg-gray-900 rounded-3xl p-6 md:p-8 max-w-md w-full border border-white/20">
               <div class="text-center mb-6">
-                <h3 class="text-2xl font-bold text-yellow-400 mb-2">Welcome Back!</h3>
-                <p class="text-gray-300">Sign in to continue your typing journey</p>
+                <h3 class="text-xl md:text-2xl font-bold text-yellow-400 mb-2">Welcome Back!</h3>
+                <p class="text-gray-300 text-sm md:text-base">Sign in to continue your typing journey</p>
               </div>
               
               <form @submit.prevent="handleLogin" class="space-y-4">
@@ -378,13 +474,13 @@
       </div>
 
       <!-- Footer -->
-      <footer class="mt-16 text-center text-gray-400 py-8">
-        <div class="flex justify-center items-center space-x-4 mb-4">
+      <footer class="mt-12 md:mt-16 text-center text-gray-400 py-6 md:py-8 px-4">
+        <div class="flex justify-center items-center space-x-3 md:space-x-4 mb-4">
           <i class="fas fa-heart text-red-400 animate-pulse"></i>
-          <span>Made with passion in Kenya</span>
+          <span class="text-sm md:text-base">Made with passion in Kenya</span>
           <i class="fas fa-flag text-green-400"></i>
         </div>
-        <p>© 2025 Fast Fingers | Empowering typists worldwide</p>
+        <p class="text-sm md:text-base">© 2025 Fast Fingers | Empowering typists worldwide</p>
       </footer>
     </div>
   </div>
@@ -411,7 +507,8 @@ export default {
       showPassword: false,
       isLoading: false,
       showSuccess: false,
-      showLogin: false
+      showLogin: false,
+      mobileMenuOpen: false
     }
   },
   computed: {
@@ -484,6 +581,24 @@ export default {
       // In a real app, navigate to the game page
       alert('Redirecting to Fast Fingers game...');
       this.showSuccess = false;
+    },
+    
+    scrollToSignUp() {
+      this.mobileMenuOpen = false;
+      const formElement = document.getElementById('signup-form');
+      if (formElement) {
+        formElement.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  },
+  watch: {
+    mobileMenuOpen(newVal) {
+      // Prevent body scrolling when mobile menu is open
+      if (newVal) {
+        document.body.style.overflow = 'hidden';
+      } else {
+        document.body.style.overflow = 'auto';
+      }
     }
   }
 }
@@ -616,5 +731,26 @@ input[type="checkbox"]:checked {
 
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.5);
+}
+
+/* Mobile responsiveness */
+@media (max-width: 640px) {
+  .text-5xl {
+    font-size: 2.5rem;
+  }
+  
+  .text-4xl {
+    font-size: 2rem;
+  }
+  
+  .features-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Prevent horizontal scrolling */
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
 }
 </style>
