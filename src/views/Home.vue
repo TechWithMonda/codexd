@@ -21,7 +21,7 @@
         </div>
         <nav class="hidden sm:block">
           <ul class="flex space-x-8">
-            <li><a href="#" class="hover:text-yellow-400 transition-all duration-300 hover:scale-105">Home</a></li>
+            <li><a href="#" class="hover:text-yellow-400 transition-all duration-300 hover:scale-105">SignUp</a></li>
             <router-link to="leaderboard">
               <li><a href="#" class="hover:text-yellow-400 transition-all duration-300 hover:scale-105">Leaderboard</a></li>
             </router-link>
@@ -43,8 +43,12 @@
       <transition name="slide-down">
         <div v-if="showMobileMenu" class="sm:hidden bg-white/10 backdrop-blur-md mx-3 rounded-2xl mb-4 p-4 border border-white/20">
           <ul class="space-y-3">
-            <li><a href="#" class="block hover:text-yellow-400 transition-all duration-300">Home</a></li>
-            <li><a href="#" class="block hover:text-yellow-400 transition-all duration-300">Leaderboard</a></li>
+ <router-link to="register">
+              <li><a href="#" class="hover:text-yellow-400 transition-all duration-300 hover:scale-105">SignUp</a></li>
+            </router-link>
+ <router-link to="leaderboard">
+              <li><a href="#" class="hover:text-yellow-400 transition-all duration-300 hover:scale-105">Leaderboard</a></li>
+            </router-link>
             <li><a href="#" class="block hover:text-yellow-400 transition-all duration-300">Upgrade</a></li>
           </ul>
         </div>
