@@ -448,7 +448,7 @@ export default {
       },
 
       lastActionTime: 0,
-      commentTimeout: null,
+      commentTimeout: 0.5,
       wordCount: 0,
       lastWordCount: 0
     }
@@ -549,7 +549,7 @@ export default {
 
         // Update cursor position
         this.updateCursor();
-      }, 100);
+      }, 10000);
 
       // Focus input with mobile considerations
       this.$nextTick(() => {
