@@ -1,8 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Home from '../views/Home.vue'
 import Register from '@/views/Register.vue'
-import Leaderboard from '../views/Leaderboard.vue'
+import differs from '../views/differs.vue'
 import TermsAndCondition from '@/views/TermsAndCondition.vue'
+import Bots from '@/views/Bots.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -12,11 +13,18 @@ const router = createRouter({
       name: 'home',
       component: Home,
     },
-    {
-      path: '/leaderboard',
-      name: 'leaderboard',
-      component: Leaderboard,
+      {
+      path: '/differs',
+      name: 'differs',
+      component: differs,
     },
+    
+     {
+      path: '/AiBots',
+      name: 'AiBots',
+      component: Bots,
+    },
+
     {
       path: '/TermsAndCondition',
       name: 'TermsAndCondition',
@@ -33,7 +41,7 @@ const router = createRouter({
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import('../views/Leaderboard.vue'),
+      component: () => import('../views/differs.vue'),
     },
   ],
 })
