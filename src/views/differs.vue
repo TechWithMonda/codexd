@@ -1,106 +1,438 @@
 <template>
-  <div>
-    <div class="dashboard-header">
-      <div class="header-left">
-        <h2>Smart Market Differ Bot</h2>
-      </div>
-      <div class="header-right">
-        <button class="btn-primary" @click="showConfigModal = true">
-          New Bot Config
-        </button>
-      </div>
-    </div>
-
-    <div class="dashboard-content">
-      <div class="sidebar">
-        <BotConfiguration
-          v-if="currentBotConfig"
-          :config="currentBotConfig"
-          @update="updateBotConfig"
-          @start="startBot"
-          @stop="stopBot"
-        />
-      </div>
-
-      <div class="main-content">
-        <div class="content-grid">
-          <div class="stats-section">
-            <Statistics :stats="statistics" />
+  <div class="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white">
+    <!-- Header with Real-time Status -->
+    <header class="bg-slate-800/50 backdrop-blur-sm border-b border-slate-700 shadow-lg">
+      <div class="container mx-auto px-6 py-4">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 bg-gradient-to-tr from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
+              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+              </svg>
+            </div>
+            <div>
+              <h1 class="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                Digit Differs Trading Bot
+              </h1>
+              <p class="text-sm text-slate-400">Enhanced Risk Management & Analytics</p>
+            </div>
           </div>
-
-          <div class="market-section">
-            <MarketAnalysis
-              :market-data="marketData"
-              :performance="marketPerformance"
-            />
-          </div>
-
-          <div class="trades-section">
-            <TradeHistory :trades="trades" />
+          <div class="flex items-center space-x-6">
+            <!-- Current Tick Display -->
+            <div v-if="currentTick" class="bg-slate-700/50 rounded-lg px-4 py-2 border border-slate-600">
+              <div class="text-xs text-slate-400">Current Tick</div>
+              <div class="text-lg font-bold">{{ currentTick.quote }}</div>
+              <div class="text-sm text-blue-400">Digit: {{ currentTick.last_digit }}</div>
+            </div>
+            
+            <!-- Status Indicators -->
+            <div class="flex flex-col space-y-2">
+              <div class="flex items-center space-x-2">
+                <div :class="['w-3 h-3 rounded-full', botStatus.is_running ? 'bg-green-500 animate-pulse' : 'bg-red-500']"></div>
+                <span class="text-sm font-medium">{{ botStatus.is_running ? 'Trading' : 'Stopped' }}</span>
+              </div>
+              <div class="flex items-center space-x-2">
+                <div :class="['w-3 h-3 rounded-full', apiConnected ? 'bg-blue-500' : 'bg-gray-500']"></div>
+                <span class="text-xs text-slate-400">{{ apiConnected ? 'API Connected' : 'Disconnected' }}</span>
+              </div>
+            </div>
+            
+            <!-- Uptime -->
+            <div class="text-right">
+              <div class="text-xs text-slate-400">Uptime</div>
+              <div class="text-sm font-medium">{{ formatUptime(botStatus.uptime_minutes) }}</div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </header>
 
-    <!-- Bot Config Modal -->
-    <div v-if="showConfigModal" class="modal-overlay" tabindex="-1">
-      <div class="modal">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5>Create New Bot Configuration</h5>
-            <button type="button" class="close-btn" @click="showConfigModal = false">&times;</button>
+    <div class="container mx-auto px-6 py-8">
+      <!-- Enhanced Configuration Section -->
+      <div class="bg-slate-800/30 backdrop-blur-sm rounded-2xl p-6 mb-8 border border-slate-700/50 shadow-xl">
+        <h2 class="text-xl font-semibold mb-6 flex items-center">
+          <svg class="w-6 h-6 text-blue-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+          </svg>
+          Trading Configuration
+        </h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-slate-300">API Token</label>
+            <input 
+              v-model="config.token" 
+              type="password" 
+              placeholder="Enter Deriv API token"
+              class="w-full px-4 py-3 bg-slate-700/50 border border-slate-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 placeholder-slate-400"
+            />
           </div>
-          <div class="modal-body">
-            <form @submit.prevent="createNewConfig">
-              <div class="form-group">
-                <label>API Token</label>
-                <input
-                  type="password"
-                  class="form-input"
-                  v-model="newConfig.token"
-                  required
-                />
-              </div>
-              <div class="form-group">
-                <label>Stake Amount ($)</label>
-                <input
-                  type="number"
-                  class="form-input"
-                  v-model="newConfig.stake"
-                  min="1"
-                  step="0.01"
-                  required
-                />
-              </div>
-              <div class="form-group">
-                <label>Max Trades</label>
-                <input
-                  type="number"
-                  class="form-input"
-                  v-model="newConfig.max_trades"
-                  min="1"
-                  required
-                />
-              </div>
-              <div class="form-group">
-                <label>Initial Market</label>
-                <select class="form-select" v-model="newConfig.current_market">
-                  <option value="R_10">R_10</option>
-                  <option value="R_25">R_25</option>
-                  <option value="R_50">R_50</option>
-                  <option value="R_75">R_75</option>
-                  <option value="R_100">R_100</option>
-                </select>
-              </div>
-            </form>
+          
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-slate-300">Market</label>
+            <select 
+              v-model="config.symbol" 
+              class="w-full px-4 py-3 bg-slate-700/50 border border-slate-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+            >
+              <option v-for="market in availableMarkets" :key="market" :value="market">
+                {{ market }}
+              </option>
+            </select>
           </div>
-          <div class="modal-footer">
-            <button type="button" class="btn-secondary" @click="showConfigModal = false">
-              Cancel
+          
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-slate-300">Stake ($)</label>
+            <input 
+              v-model.number="config.stake" 
+              type="number" 
+              min="0.35" 
+              step="0.25"
+              class="w-full px-4 py-3 bg-slate-700/50 border border-slate-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+            />
+            <p class="text-xs text-slate-400">Min: $0.35, Max: 2% of balance</p>
+          </div>
+          
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-slate-300">Daily Loss Limit ($)</label>
+            <input 
+              v-model.number="config.dailyLossLimit" 
+              type="number" 
+              min="10" 
+              step="5"
+              class="w-full px-4 py-3 bg-slate-700/50 border border-slate-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+            />
+          </div>
+          
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-slate-300">Trade Cooldown (s)</label>
+            <input 
+              v-model.number="config.tradeCooldown" 
+              type="number" 
+              min="1" 
+              max="60"
+              class="w-full px-4 py-3 bg-slate-700/50 border border-slate-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Enhanced Statistics Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8">
+        <!-- Account Balance -->
+        <div class="bg-slate-800/30 backdrop-blur-sm rounded-2xl p-6 border border-slate-700/50 shadow-xl">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-semibold">Account Balance</h3>
+            <svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+            </svg>
+          </div>
+          <div class="text-3xl font-bold text-white mb-2">
+            ${{ botStatus.current_balance?.toFixed(2) || '0.00' }}
+          </div>
+          <div class="text-sm text-slate-400">
+            Max stake: ${{ (botStatus.current_balance * 0.02)?.toFixed(2) || '0.00' }}
+          </div>
+        </div>
+
+        <!-- Daily P&L -->
+        <div class="bg-slate-800/30 backdrop-blur-sm rounded-2xl p-6 border border-slate-700/50 shadow-xl">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-semibold">Daily P&L</h3>
+            <svg :class="['w-6 h-6', botStatus.daily_pnl >= 0 ? 'text-green-400' : 'text-red-400']" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path v-if="botStatus.daily_pnl >= 0" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+              <path v-else stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6"></path>
+            </svg>
+          </div>
+          <div :class="['text-3xl font-bold mb-2', botStatus.daily_pnl >= 0 ? 'text-green-400' : 'text-red-400']">
+            ${{ botStatus.daily_pnl?.toFixed(2) || '0.00' }}
+          </div>
+          <div class="text-sm text-slate-400">
+            Limit: ${{ config.dailyLossLimit }}
+          </div>
+        </div>
+
+        <!-- Win Rate -->
+        <div class="bg-slate-800/30 backdrop-blur-sm rounded-2xl p-6 border border-slate-700/50 shadow-xl">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-semibold">Win Rate</h3>
+            <svg class="w-6 h-6 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path>
+            </svg>
+          </div>
+          <div class="text-3xl font-bold text-yellow-400 mb-2">
+            {{ botStatus.win_rate || 0 }}%
+          </div>
+          <div class="text-sm text-slate-400">
+            {{ botStatus.successful_trades || 0 }}/{{ botStatus.total_trades || 0 }} trades
+          </div>
+        </div>
+
+        <!-- Total P&L -->
+        <div class="bg-slate-800/30 backdrop-blur-sm rounded-2xl p-6 border border-slate-700/50 shadow-xl">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-semibold">Total P&L</h3>
+            <svg :class="['w-6 h-6', botStatus.total_pnl >= 0 ? 'text-green-400' : 'text-red-400']" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+            </svg>
+          </div>
+          <div :class="['text-3xl font-bold mb-2', botStatus.total_pnl >= 0 ? 'text-green-400' : 'text-red-400']">
+            ${{ botStatus.total_pnl?.toFixed(2) || '0.00' }}
+          </div>
+          <div class="text-sm text-slate-400">
+            Session total
+          </div>
+        </div>
+      </div>
+
+      <!-- Controls and Analysis Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+        <!-- Controls -->
+        <div class="bg-slate-800/30 backdrop-blur-sm rounded-2xl p-6 border border-slate-700/50 shadow-xl">
+          <h2 class="text-xl font-semibold mb-6 flex items-center">
+            <svg class="w-6 h-6 text-purple-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4"></path>
+            </svg>
+            Trading Controls
+          </h2>
+          
+          <div class="space-y-4">
+            <button 
+              @click="startBot" 
+              :disabled="!config.token || botStatus.is_running || loading"
+              class="w-full flex items-center justify-center space-x-2 px-6 py-4 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 disabled:from-slate-600 disabled:to-slate-700 disabled:cursor-not-allowed rounded-xl font-semibold transition-all duration-200 shadow-lg hover:shadow-green-500/25 hover:scale-105 disabled:hover:scale-100"
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h.01M19 10a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              <span>{{ loading ? 'Starting...' : 'Start Bot' }}</span>
             </button>
-            <button type="button" class="btn-primary" @click="createNewConfig">
-              Create
+            
+            <button 
+              @click="stopBot" 
+              :disabled="!botStatus.is_running || loading"
+              class="w-full flex items-center justify-center space-x-2 px-6 py-4 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 disabled:from-slate-600 disabled:to-slate-700 disabled:cursor-not-allowed rounded-xl font-semibold transition-all duration-200 shadow-lg hover:shadow-red-500/25 hover:scale-105 disabled:hover:scale-100"
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 9h6v6H9z"></path>
+              </svg>
+              <span>{{ loading ? 'Stopping...' : 'Stop Bot' }}</span>
             </button>
+            
+            <button 
+              @click="forceTrade" 
+              :disabled="!botStatus.is_running || loading"
+              class="w-full flex items-center justify-center space-x-2 px-6 py-4 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 disabled:from-slate-600 disabled:to-slate-700 disabled:cursor-not-allowed rounded-xl font-semibold transition-all duration-200 shadow-lg hover:shadow-blue-500/25 hover:scale-105 disabled:hover:scale-100"
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+              </svg>
+              <span>Force Trade</span>
+            </button>
+            
+            <button 
+              @click="updateSettings" 
+              :disabled="loading"
+              class="w-full flex items-center justify-center space-x-2 px-6 py-4 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 disabled:from-slate-600 disabled:to-slate-700 disabled:cursor-not-allowed rounded-xl font-semibold transition-all duration-200 shadow-lg hover:shadow-purple-500/25 hover:scale-105 disabled:hover:scale-100"
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+              </svg>
+              <span>Update Settings</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Digit Analysis -->
+        <div class="bg-slate-800/30 backdrop-blur-sm rounded-2xl p-6 border border-slate-700/50 shadow-xl">
+          <h2 class="text-xl font-semibold mb-6 flex items-center">
+            <svg class="w-6 h-6 text-orange-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+            </svg>
+            Digit Analysis
+          </h2>
+          
+          <!-- Rarest Digits Display -->
+          <div class="mb-6">
+            <h3 class="text-sm font-medium text-slate-300 mb-3">Target Digits (Rarest)</h3>
+            <div class="flex space-x-2">
+              <div 
+                v-for="digit in botStatus.rarest_digits" 
+                :key="digit"
+                class="w-12 h-12 bg-gradient-to-br from-red-500 to-red-600 rounded-lg flex items-center justify-center text-xl font-bold border-2 border-red-400 shadow-lg"
+              >
+                {{ digit }}
+              </div>
+              <div v-if="!botStatus.rarest_digits || botStatus.rarest_digits.length === 0" class="text-slate-400 text-sm py-4">
+                No analysis data yet...
+              </div>
+            </div>
+          </div>
+
+          <!-- Digit Frequency Chart -->
+          <div class="space-y-3">
+            <h3 class="text-sm font-medium text-slate-300">Frequency Distribution</h3>
+            <div class="grid grid-cols-5 gap-2">
+              <div 
+                v-for="digit in [0,1,2,3,4,5,6,7,8,9]" 
+                :key="digit"
+                class="text-center"
+              >
+                <div class="text-xs font-medium mb-1">{{ digit }}</div>
+                <div class="bg-slate-700/30 h-16 rounded relative overflow-hidden">
+                  <div 
+                    :class="[
+                      'absolute bottom-0 w-full transition-all duration-500',
+                      botStatus.rarest_digits?.includes(digit) ? 'bg-gradient-to-t from-red-500 to-red-400' : 'bg-gradient-to-t from-blue-500 to-blue-400'
+                    ]"
+                    :style="{ height: `${getDigitFrequencyHeight(digit)}%` }"
+                  ></div>
+                </div>
+                <div class="text-xs text-slate-400 mt-1">
+                  {{ getDigitFrequency(digit) }}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recent Ticks -->
+          <div class="mt-6">
+            <h3 class="text-sm font-medium text-slate-300 mb-3">Recent Digits</h3>
+            <div class="flex space-x-1 overflow-x-auto pb-2">
+              <div 
+                v-for="(digit, index) in getRecentTicks()" 
+                :key="index"
+                :class="[
+                  'flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold border transition-all duration-200',
+                  botStatus.rarest_digits?.includes(digit) ? 
+                    'bg-red-500/20 border-red-500 text-red-300' : 
+                    'bg-slate-600/50 border-slate-500 text-slate-300'
+                ]"
+              >
+                {{ digit }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Strategy Info -->
+        <div class="bg-slate-800/30 backdrop-blur-sm rounded-2xl p-6 border border-slate-700/50 shadow-xl">
+          <h2 class="text-xl font-semibold mb-6 flex items-center">
+            <svg class="w-6 h-6 text-cyan-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            Strategy Info
+          </h2>
+          
+          <div class="space-y-4">
+            <div class="bg-slate-700/30 rounded-lg p-4">
+              <h3 class="font-semibold text-green-400 mb-2">DIGITDIFF Strategy</h3>
+              <p class="text-sm text-slate-300 mb-3">
+                Trades on the assumption that the next tick will NOT match the rarest digit from recent history.
+              </p>
+              <div class="text-xs text-slate-400">
+                • Analyzes last 100 ticks<br>
+                • Identifies underrepresented digits<br>
+                • Places DIFFERS contracts on rarest digit
+              </div>
+            </div>
+
+            <div class="bg-slate-700/30 rounded-lg p-4">
+              <h3 class="font-semibold text-blue-400 mb-2">Risk Management</h3>
+              <div class="text-xs text-slate-400 space-y-1">
+                <div>• Max stake: 2% of balance</div>
+                <div>• Trade cooldown: {{ config.tradeCooldown }}s</div>
+                <div>• Daily loss limit: ${{ config.dailyLossLimit }}</div>
+                <div>• Minimum ticks for analysis: 20</div>
+              </div>
+            </div>
+
+            <div class="bg-slate-700/30 rounded-lg p-4">
+              <h3 class="font-semibold text-purple-400 mb-2">Current Status</h3>
+              <div class="text-xs text-slate-400 space-y-1">
+                <div>Ticks analyzed: {{ botStatus.tick_analysis?.total_ticks_analyzed || 0 }}</div>
+                <div>Active market: {{ config.symbol }}</div>
+                <div>Strategy: Digit Differs</div>
+                <div>Contract duration: 1 tick</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Activity Log -->
+      <div class="bg-slate-800/30 backdrop-blur-sm rounded-2xl p-6 border border-slate-700/50 shadow-xl">
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="text-xl font-semibold flex items-center">
+            <svg class="w-6 h-6 text-emerald-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+            </svg>
+            Activity Log
+          </h2>
+          <button 
+            @click="clearLogs" 
+            class="px-4 py-2 bg-slate-700/50 hover:bg-slate-600/50 rounded-lg font-medium transition-all duration-200 text-sm border border-slate-600/50"
+          >
+            Clear Logs
+          </button>
+        </div>
+        
+        <div class="bg-slate-900/50 rounded-xl border border-slate-700/50 h-64 overflow-y-auto custom-scrollbar">
+          <div class="p-4 space-y-2">
+            <div 
+              v-for="(log, index) in logs" 
+              :key="index"
+              :class="[
+                'flex items-start space-x-3 py-2 px-3 rounded-lg transition-colors duration-200 slide-in',
+                log.level === 'success' ? 'bg-green-500/10 border-l-4 border-green-500' :
+                log.level === 'error' ? 'bg-red-500/10 border-l-4 border-red-500' :
+                log.level === 'warning' ? 'bg-yellow-500/10 border-l-4 border-yellow-500' :
+                log.level === 'trade' ? 'bg-blue-500/10 border-l-4 border-blue-500' :
+                'bg-slate-500/10 border-l-4 border-slate-500'
+              ]"
+            >
+              <div class="flex-shrink-0 mt-1">
+                <svg v-if="log.level === 'success'" class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                <svg v-else-if="log.level === 'error'" class="w-4 h-4 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+                <svg v-else-if="log.level === 'warning'" class="w-4 h-4 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                </svg>
+                <svg v-else-if="log.level === 'trade'" class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                </svg>
+                <svg v-else class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+              </div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center space-x-2 mb-1">
+                  <span class="text-xs font-mono text-slate-400">[{{ log.time }}]</span>
+                  <span v-if="log.trade_info" class="text-xs bg-slate-600 px-2 py-1 rounded">
+                    {{ log.trade_info }}
+                  </span>
+                </div>
+                <div :class="[
+                  'text-sm',
+                  log.level === 'success' ? 'text-green-300' :
+                  log.level === 'error' ? 'text-red-300' :
+                  log.level === 'warning' ? 'text-yellow-300' :
+                  log.level === 'trade' ? 'text-blue-300' :
+                  'text-slate-300'
+                ]">{{ log.message }}</div>
+              </div>
+            </div>
+            <div v-if="logs.length === 0" class="text-center text-slate-400 py-8">
+              <svg class="w-12 h-12 mx-auto mb-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+              </svg>
+              <p class="font-medium">No activity logs yet</p>
+              <p class="text-sm">Start the bot to see real-time trading updates</p>
+            </div>
           </div>
         </div>
       </div>
@@ -109,311 +441,478 @@
 </template>
 
 <script>
-
-import BotConfiguration from '../components/BotConfiguration.vue'
-import Statistics from '../components/Statistics.vue'
-import MarketAnalysis from '../components/MarketAnalysis.vue'
-import TradeHistory from '../components/TradeHistory.vue'
+import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
 
 export default {
-  name: 'Dashboard',
-  components: {
-    BotConfiguration,
-    Statistics,
-    MarketAnalysis,
-    TradeHistory
-  },
-  data() {
-    return {
-      showConfigModal: false,
-      currentBotConfig: null,
-      statistics: {},
-      marketData: {},
-      marketPerformance: {},
-      trades: [],
-      newConfig: {
-        token: '',
-        stake: 1,
-        max_trades: 5,
-        current_market: 'R_10'
+  name: 'DigitDiffersTradingDashboard',
+  setup() {
+    // API Configuration
+    const API_BASE_URL = 'http://localhost:8000'
+
+    // Configuration state
+    const config = ref({
+      token: '',
+      symbol: 'R_100',
+      stake: 1.0,
+      dailyLossLimit: 50.0,
+      tradeCooldown: 5
+    })
+
+    // Bot status and statistics
+    const botStatus = ref({
+      is_running: false,
+      symbol: null,
+      total_trades: 0,
+      successful_trades: 0,
+      win_rate: 0,
+      total_pnl: 0,
+      daily_pnl: 0,
+      current_balance: 0,
+      rarest_digits: [],
+      tick_analysis: {
+        total_ticks_analyzed: 0,
+        digit_frequencies: {},
+        recent_ticks: []
+      },
+      uptime_minutes: 0
+    })
+
+    // Real-time data
+    const currentTick = ref(null)
+    const apiConnected = ref(false)
+    const loading = ref(false)
+    const logs = ref([])
+
+    // Available markets
+    const availableMarkets = ref(['R_10', 'R_25', 'R_50', 'R_75', 'R_100'])
+
+    // Polling intervals
+    let statusInterval = null
+    let tickInterval = null
+
+    // API utility function
+    const makeApiRequest = async (endpoint, method = 'GET', data = null) => {
+      try {
+        const config = {
+          method,
+          headers: { 'Content-Type': 'application/json' },
+        }
+        
+        if (data) {
+          config.body = JSON.stringify(data)
+        }
+        
+        const response = await fetch(`${API_BASE_URL}${endpoint}`, config)
+        
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({}))
+          throw new Error(errorData.detail || `HTTP ${response.status}: ${response.statusText}`)
+        }
+        
+        return await response.json()
+      } catch (error) {
+        log(`API Error: ${error.message}`, 'error')
+        throw error
       }
     }
-  },
-  methods: {
-    createNewConfig() {
-      // Implementation for creating new config
-      this.showConfigModal = false
-    },
-    updateBotConfig(config) {
-      this.currentBotConfig = config
-    },
-    startBot() {
-      // Implementation for starting bot
-    },
-    stopBot() {
-      // Implementation for stopping bot
+
+    // Enhanced logging function
+    const log = (message, level = 'info', tradeInfo = null) => {
+      const time = new Date().toLocaleTimeString()
+      logs.value.unshift({ 
+        time, 
+        message, 
+        level,
+        trade_info: tradeInfo,
+        id: Date.now() + Math.random()
+      })
+      
+      if (logs.value.length > 100) {
+        logs.value = logs.value.slice(0, 100)
+      }
+    }
+
+    // Bot control functions
+    const startBot = async () => {
+      if (!config.value.token.trim()) {
+        log('Please enter a valid Deriv API token', 'error')
+        return
+      }
+
+      loading.value = true
+      
+      try {
+        log('Initializing Digit Differs trading bot...', 'info')
+        
+        // Save token to localStorage
+        localStorage.setItem('deriv_token', config.value.token)
+        
+        // Start the enhanced bot
+        const response = await makeApiRequest('/api/start-bot', 'POST', {
+          token: config.value.token,
+          symbol: config.value.symbol,
+          strategy: 'digit_differs',
+          stake: config.value.stake
+        })
+
+        if (response.status === 'started' || response.status === 'running') {
+          log(`Bot started successfully on ${config.value.symbol}`, 'success', `Stake: ${config.value.stake}`)
+          log(`Strategy: Digit Differs (DIGITDIFF contracts)`, 'info')
+          log(`Risk limits: ${config.value.dailyLossLimit} daily loss, ${config.value.tradeCooldown}s cooldown`, 'info')
+          
+          // Start monitoring
+          startStatusPolling()
+          startTickSimulation()
+          
+        } else {
+          log(`Bot start failed: ${response.message || 'Unknown error'}`, 'error')
+        }
+        
+      } catch (error) {
+        log(`Failed to start bot: ${error.message}`, 'error')
+        apiConnected.value = false
+      } finally {
+        loading.value = false
+      }
+    }
+
+    const stopBot = async () => {
+      loading.value = true
+      
+      try {
+        log('Stopping trading bot...', 'info')
+        
+        const response = await makeApiRequest('/api/stop-bot', 'POST')
+        
+        if (response.status === 'stopped') {
+          log('Trading bot stopped successfully', 'success')
+          
+          // Log session summary
+          if (response.session_stats) {
+            const stats = response.session_stats
+            log(`Session summary: ${stats.total_trades} trades, ${stats.win_rate}% win rate, ${stats.total_pnl} P&L`, 'info')
+          }
+        }
+        
+        stopStatusPolling()
+        stopTickSimulation()
+        
+      } catch (error) {
+        log(`Error stopping bot: ${error.message}`, 'error')
+      } finally {
+        loading.value = false
+        // Force local state update
+        botStatus.value.is_running = false
+      }
+    }
+
+    const forceTrade = async () => {
+      try {
+        log('Executing manual trade...', 'info')
+        
+        const response = await makeApiRequest('/api/force-trade', 'POST')
+        
+        if (response.status === 'success') {
+          log(`Manual trade executed on digit ${response.target_digit}`, 'trade', `Target: ${response.target_digit}`)
+        } else {
+          log(`Manual trade failed: ${response.message}`, 'error')
+        }
+        
+      } catch (error) {
+        log(`Manual trade error: ${error.message}`, 'error')
+      }
+    }
+
+    const updateSettings = async () => {
+      try {
+        log('Updating bot settings...', 'info')
+        
+        // Update settings via API if bot is running
+        if (botStatus.value.is_running) {
+          await makeApiRequest('/api/update-settings', 'POST', {
+            stake: config.value.stake,
+            trade_cooldown: config.value.tradeCooldown,
+            daily_loss_limit: config.value.dailyLossLimit
+          })
+        }
+        
+        // Save to localStorage
+        localStorage.setItem('trading_config', JSON.stringify(config.value))
+        
+        log(`Settings updated: Stake ${config.value.stake}, Cooldown ${config.value.tradeCooldown}s, Loss limit ${config.value.dailyLossLimit}`, 'success')
+        
+      } catch (error) {
+        log(`Settings update failed: ${error.message}`, 'error')
+      }
+    }
+
+    // Status monitoring
+    const getBotStatus = async () => {
+      try {
+        const response = await makeApiRequest('/api/bot-stats')
+        
+        // Update bot status
+        Object.assign(botStatus.value, response)
+        
+        // Update connection status
+        if (!apiConnected.value) {
+          apiConnected.value = true
+          log('API connection restored', 'success')
+        }
+        
+      } catch (error) {
+        if (apiConnected.value) {
+          apiConnected.value = false
+          log('Lost connection to API server', 'warning')
+        }
+        
+        // Reset bot status on connection loss
+        botStatus.value.is_running = false
+      }
+    }
+
+    const startStatusPolling = () => {
+      if (statusInterval) return
+      
+      statusInterval = setInterval(async () => {
+        await getBotStatus()
+      }, 2000)
+      
+      log('Started real-time monitoring', 'info')
+    }
+
+    const stopStatusPolling = () => {
+      if (statusInterval) {
+        clearInterval(statusInterval)
+        statusInterval = null
+        log('Stopped real-time monitoring', 'info')
+      }
+    }
+
+    // Simulate tick data for demo purposes
+    const startTickSimulation = () => {
+      if (tickInterval) return
+      
+      tickInterval = setInterval(() => {
+        if (!botStatus.value.is_running) return
+        
+        // Generate realistic tick data
+        const basePrice = 1000.0
+        const variation = (Math.random() - 0.5) * 20
+        const quote = (basePrice + variation).toFixed(5)
+        const lastDigit = parseInt(quote.slice(-1))
+        
+        currentTick.value = {
+          quote: parseFloat(quote),
+          last_digit: lastDigit,
+          symbol: config.value.symbol,
+          timestamp: Date.now()
+        }
+        
+        // Occasionally log significant ticks
+        if (botStatus.value.rarest_digits.includes(lastDigit) && Math.random() < 0.3) {
+          log(`Rare digit ${lastDigit} appeared in tick ${quote}`, 'trade', `Digit: ${lastDigit}`)
+        }
+        
+      }, 1000 + Math.random() * 2000) // Random interval 1-3 seconds
+    }
+
+    const stopTickSimulation = () => {
+      if (tickInterval) {
+        clearInterval(tickInterval)
+        tickInterval = null
+      }
+    }
+
+    // Utility functions for display
+    const formatUptime = (minutes) => {
+      if (!minutes) return '0m'
+      if (minutes < 60) return `${Math.floor(minutes)}m`
+      const hours = Math.floor(minutes / 60)
+      const mins = Math.floor(minutes % 60)
+      return `${hours}h ${mins}m`
+    }
+
+    const getDigitFrequency = (digit) => {
+      return botStatus.value.tick_analysis?.digit_frequencies?.[digit] || 0
+    }
+
+    const getDigitFrequencyHeight = (digit) => {
+      const frequencies = botStatus.value.tick_analysis?.digit_frequencies || {}
+      const maxFreq = Math.max(...Object.values(frequencies), 1)
+      const freq = frequencies[digit] || 0
+      return Math.max((freq / maxFreq) * 100, 2)
+    }
+
+    const getRecentTicks = () => {
+      return botStatus.value.tick_analysis?.recent_ticks?.slice(-15) || []
+    }
+
+    const clearLogs = () => {
+      logs.value = []
+      log('Activity logs cleared', 'info')
+    }
+
+    // Test connection on mount
+    const testConnection = async () => {
+      try {
+        const response = await makeApiRequest('/')
+        if (response.message) {
+          apiConnected.value = true
+          log('Connected to trading API server', 'success')
+          
+          // Check if bot is already running
+          await getBotStatus()
+          
+          if (botStatus.value.is_running) {
+            log('Detected active bot session, resuming monitoring...', 'info')
+            startStatusPolling()
+            startTickSimulation()
+          }
+        }
+      } catch (error) {
+        apiConnected.value = false
+        log('Failed to connect to API server. Please ensure the FastAPI server is running on port 8000.', 'error')
+      }
+    }
+
+    // Component lifecycle
+    onMounted(async () => {
+      // Load saved configuration
+      const savedToken = localStorage.getItem('deriv_token')
+      const savedConfig = localStorage.getItem('trading_config')
+      
+      if (savedToken) {
+        config.value.token = savedToken
+      }
+      
+      if (savedConfig) {
+        try {
+          Object.assign(config.value, JSON.parse(savedConfig))
+        } catch (e) {
+          console.warn('Failed to load saved config')
+        }
+      }
+
+      // Initialize
+      log('Initializing Enhanced Digit Differs Bot Dashboard...', 'info')
+      log('Strategy: DIGITDIFF contracts on rarest digits', 'info')
+      
+      await testConnection()
+      
+      log('Dashboard ready. Configure settings and start trading.', 'success')
+    })
+
+    onUnmounted(() => {
+      stopStatusPolling()
+      stopTickSimulation()
+    })
+
+    return {
+      // State
+      config,
+      botStatus,
+      currentTick,
+      apiConnected,
+      loading,
+      logs,
+      availableMarkets,
+      
+      // Methods
+      startBot,
+      stopBot,
+      forceTrade,
+      updateSettings,
+      clearLogs,
+      
+      // Utilities
+      formatUptime,
+      getDigitFrequency,
+      getDigitFrequencyHeight,
+      getRecentTicks
     }
   }
 }
 </script>
 
 <style scoped>
-.dashboard-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 2rem;
-  padding: 1rem 0;
+/* Custom animations */
+@keyframes slide-in {
+  from { transform: translateX(-100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
 }
 
-.header-left h2 {
-  margin: 0;
-  color: #2c3e50;
-  font-size: 1.8rem;
-  font-weight: 600;
+.slide-in {
+  animation: slide-in 0.3s ease-out;
 }
 
-.header-right {
-  display: flex;
-  align-items: center;
+/* Custom scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
 }
 
-.dashboard-content {
-  display: grid;
-  grid-template-columns: 1fr 2fr;
-  gap: 2rem;
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(30, 41, 59, 0.3);
+  border-radius: 3px;
 }
 
-.sidebar {
-  min-height: 400px;
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.5);
+  border-radius: 3px;
 }
 
-.main-content {
-  display: flex;
-  flex-direction: column;
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.7);
 }
 
-.content-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1.5rem;
-}
-
-.stats-section {
-  grid-column: 1 / -1;
-}
-
-.market-section,
-.trades-section {
-  min-height: 300px;
-}
-
-/* Button Styles */
-.btn-primary {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  border: none;
-  padding: 0.75rem 1.5rem;
-  border-radius: 8px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-size: 0.9rem;
-}
-
-.btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-}
-
-.btn-secondary {
-  background: #6c757d;
-  color: white;
-  border: none;
-  padding: 0.75rem 1.5rem;
-  border-radius: 8px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-size: 0.9rem;
-}
-
-.btn-secondary:hover {
-  background: #5a6268;
-  transform: translateY(-1px);
-}
-
-/* Modal Styles */
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-.modal {
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-  width: 90%;
-  max-width: 500px;
-  max-height: 90vh;
-  overflow: hidden;
-}
-
-.modal-content {
-  display: flex;
-  flex-direction: column;
-}
-
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1.5rem;
-  border-bottom: 1px solid #e9ecef;
-  background: #f8f9fa;
-}
-
-.modal-header h5 {
-  margin: 0;
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: #2c3e50;
-}
-
-.close-btn {
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
-  color: #6c757d;
-  padding: 0;
-  width: 30px;
-  height: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
+/* Transitions */
+* {
   transition: all 0.2s ease;
 }
 
-.close-btn:hover {
-  background: #e9ecef;
-  color: #495057;
+/* Button hover effects */
+button:hover:not(:disabled) {
+  transform: translateY(-1px);
 }
 
-.modal-body {
-  padding: 1.5rem;
-  overflow-y: auto;
+button:active:not(:disabled) {
+  transform: translateY(0);
 }
 
-.modal-footer {
-  display: flex;
-  justify-content: flex-end;
-  gap: 0.75rem;
-  padding: 1.5rem;
-  border-top: 1px solid #e9ecef;
-  background: #f8f9fa;
+/* Input focus effects */
+input:focus, select:focus {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
 }
 
-/* Form Styles */
-.form-group {
-  margin-bottom: 1.5rem;
+/* Container max width */
+.container {
+  max-width: 1400px;
 }
 
-.form-group label {
-  display: block;
-  margin-bottom: 0.5rem;
-  font-weight: 500;
-  color: #495057;
-  font-size: 0.9rem;
-}
-
-.form-input,
-.form-select {
-  width: 100%;
-  padding: 0.75rem;
-  border: 2px solid #e9ecef;
-  border-radius: 8px;
-  font-size: 0.9rem;
-  transition: all 0.3s ease;
-  background: white;
-}
-
-.form-input:focus,
-.form-select:focus {
-  outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-}
-
-.form-select {
-  cursor: pointer;
-}
-
-/* Responsive Design */
-@media (max-width: 1024px) {
-  .content-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .market-section,
-  .trades-section {
-    grid-column: 1;
-  }
-}
-
+/* Responsive design */
 @media (max-width: 768px) {
-  .dashboard-content {
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  .grid {
     grid-template-columns: 1fr;
-    gap: 1.5rem;
-  }
-  
-  .dashboard-header {
-    flex-direction: column;
-    gap: 1rem;
-    text-align: center;
-  }
-  
-  .header-right {
-    width: 100%;
-    justify-content: center;
-  }
-  
-  .modal {
-    width: 95%;
-    margin: 1rem;
-  }
-  
-  .modal-footer {
-    flex-direction: column;
-  }
-  
-  .modal-footer button {
-    width: 100%;
   }
 }
 
-@media (max-width: 480px) {
-  .dashboard-header {
-    padding: 0.5rem 0;
-  }
-  
-  .header-left h2 {
-    font-size: 1.5rem;
-  }
-  
-  .modal-header,
-  .modal-body,
-  .modal-footer {
-    padding: 1rem;
-  }
+/* Focus states for accessibility */
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 2px solid rgb(59 130 246);
+  outline-offset: 2px;
+}
+
+/* Text selection color */
+::selection {
+  background-color: rgba(59, 130, 246, 0.3);
+  color: white;
 }
 </style>

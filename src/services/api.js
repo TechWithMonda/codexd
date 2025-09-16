@@ -1,96 +1,58 @@
-const API_BASE_URL = 'http://localhost:8000/api/trading'
+import axios from 'axios'
 
-export default {
-  async request(endpoint, options = {}) {
-    const url = `${API_BASE_URL}${endpoint}`
-    const response = await fetch(url, {
-      headers: {
-        'Content-Type': 'application/json',
-        ...options.headers
-      },
-      ...options
-    })
-    
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`)
-    }
-    
-    return response.json()
-  },
+// Use localhost in development, production URL otherwise
+const API_BASE_URL = process.env.NODE_ENV === 'production'
+  ? 'https://your-production-api.com'
+  : 'http://localhost:8000'
 
-  // Bot Configuration
-  getBotConfigs() {
-    return this.request('/bot-configs/')
-  },
-  
-  createBotConfig(config) {
-    return this.request('/bot-configs/', {
-      method: 'POST',
-      body: JSON.stringify(config)
-    })
-  },
-  
-  updateBotConfig(id, config) {
-    return this.request(`/bot-configs/${id}/`, {
-      method: 'PUT',
-      body: JSON.stringify(config)
-    })
-  },
-  
-  deleteBotConfig(id) {
-    return this.request(`/bot-configs/${id}/`, {
-      method: 'DELETE'
-    })
-  },
-  
-  startBot(id) {
-    return this.request(`/bot-configs/${id}/start_bot/`, {
-      method: 'POST'
-    })
-  },
-  
-  stopBot(id) {
-    return this.request(`/bot-configs/${id}/stop_bot/`, {
-      method: 'POST'
-    })
-  },
-  
-  switchMarket(id) {
-    return this.request(`/bot-configs/${id}/switch_market/`, {
-      method: 'POST'
-    })
-  },
-  
-  forceTrade(id) {
-    return this.request(`/bot-configs/${id}/force_trade/`, {
-      method: 'POST'
-    })
-  },
-  
-  // Trades
-  getTrades(botConfigId = null) {
-    const params = botConfigId ? `?bot_config=${botConfigId}` : ''
-    return this.request(`/trades/${params}`)
-  },
-  
-  // Market Performance
-  getMarketPerformance(botConfigId = null) {
-    const params = botConfigId ? `?bot_config=${botConfigId}` : ''
-    return this.request(`/market-performances/${params}`)
-  },
-  
-  // Statistics
-  getStatistics(botConfigId = null) {
-    const params = botConfigId ? `?bot_config=${botConfigId}` : ''
-    return this.request(`/bot-statistics/${params}`)
-  },
-  
-  // Market Data
-  getMarketData(botConfigId = null, limit = 100) {
-    const params = new URLSearchParams()
-    if (botConfigId) params.append('bot_config', botConfigId)
-    params.append('limit', limit)
-    
-    return this.request(`/market-data/?${params}`)
+const api = axios.create({
+  baseURL: API_BASE_URL,
+  timeout: 10000,
+  headers: {
+    'Content-Type': 'application/json'
   }
+})
+
+// Request interceptor: attach token to headers for all requests
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('deriv_token')
+    if (token) {
+      config.headers['Authorization'] = `Bearer ${token}`
+    }
+    return config
+  },
+  (error) => Promise.reject(error)
+)
+
+// Response interceptor: optional, can handle global errors
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    // Example: handle 401 globally
+    if (error.response?.status === 401) {
+      console.warn('Unauthorized! Redirect to login or refresh token.')
+    }
+    return Promise.reject(error)
+  }
+)
+
+// Specific API calls
+export const tradingAPI = {
+  // Connection
+  connect: (token) => api.post('/connect', { token }),
+
+  // Bot control
+  startBot: (data) => api.post('/start-bot', data),
+  stopBot: () => api.post('/stop-bot'),
+  getStatus: () => api.get('/status'),
+
+  // Trading
+  placeTrade: (data) => api.post('/trade', data),
+  getBalance: () => api.get('/balance'), // token is now in headers
+
+  // Market data
+  getMarketAnalysis: () => api.get('/market-analysis')
 }
+
+export default api
