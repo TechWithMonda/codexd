@@ -447,7 +447,7 @@ export default {
   name: 'DigitDiffersTradingDashboard',
   setup() {
     // API Configuration
-    const API_BASE_URL = 'codexd-production.up.railway.app'
+    const API_BASE_URL = 'https://codexd-production.up.railway.app'
 
     // Configuration state
     const config = ref({
