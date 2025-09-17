@@ -12,9 +12,9 @@
             </div>
             <div>
               <h1 class="text-xl sm:text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-                Digit Differs Trading Bot
+                Average Last 5 Digits Bot
               </h1>
-              <p class="text-xs sm:text-sm text-slate-400">Enhanced Risk Management & Analytics</p>
+              <p class="text-xs sm:text-sm text-slate-400">DIGITDIFF Strategy with Enhanced Analytics</p>
             </div>
           </div>
           
@@ -33,8 +33,8 @@
                 <span class="text-sm font-medium">{{ botStatus.is_running ? 'Trading' : 'Stopped' }}</span>
               </div>
               <div class="flex items-center space-x-2">
-                <div :class="['w-3 h-3 rounded-full', apiConnected ? 'bg-blue-500' : 'bg-gray-500']"></div>
-                <span class="text-xs text-slate-400">{{ apiConnected ? 'API Connected' : 'Disconnected' }}</span>
+                <div :class="['w-3 h-3 rounded-full', botStatus.is_connected ? 'bg-blue-500' : 'bg-gray-500']"></div>
+                <span class="text-xs text-slate-400">{{ botStatus.is_connected ? 'API Connected' : 'Disconnected' }}</span>
               </div>
             </div>
             
@@ -242,50 +242,87 @@
               </svg>
               <span>Update Settings</span>
             </button>
+            
+            <button 
+              @click="resetData" 
+              :disabled="loading"
+              class="w-full flex items-center justify-center space-x-2 px-4 sm:px-6 py-3 sm:py-4 bg-gradient-to-r from-orange-600 to-orange-700 hover:from-orange-700 hover:to-orange-800 disabled:from-slate-600 disabled:to-slate-700 disabled:cursor-not-allowed rounded-xl font-semibold transition-all duration-200 shadow-lg hover:shadow-orange-500/25 hover:scale-105 disabled:hover:scale-100 text-sm sm:text-base"
+            >
+              <svg class="w-4 sm:w-5 h-4 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+              </svg>
+              <span>Reset Data</span>
+            </button>
           </div>
         </div>
 
-        <!-- Digit Analysis -->
+        <!-- Last 5 Digits Analysis -->
         <div class="bg-slate-800/30 backdrop-blur-sm rounded-2xl p-4 sm:p-6 border border-slate-700/50 shadow-xl">
           <h2 class="text-lg sm:text-xl font-semibold mb-4 sm:mb-6 flex items-center">
             <svg class="w-5 sm:w-6 h-5 sm:h-6 text-orange-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
             </svg>
-            Digit Analysis
+            Last 5 Digits Analysis
           </h2>
           
-          <!-- Rarest Digits Display -->
-          <div class="mb-4 sm:mb-6">
-            <h3 class="text-sm font-medium text-slate-300 mb-3">Target Digits (Rarest)</h3>
-            <div class="flex flex-wrap gap-2">
-              <div 
-                v-for="digit in botStatus.rarest_digits" 
-                :key="digit"
-                class="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-red-500 to-red-600 rounded-lg flex items-center justify-center text-lg sm:text-xl font-bold border-2 border-red-400 shadow-lg flex-shrink-0"
-              >
+          <!-- Current Target Display -->
+          <div class="mb-6">
+            <h3 class="text-sm font-medium text-slate-300 mb-3">Current Target Digit</h3>
+            <div class="flex items-center justify-center">
+              <div v-if="botStatus.current_target_digit !== null" 
+                   class="w-16 h-16 bg-gradient-to-br from-red-500 to-red-600 rounded-2xl flex items-center justify-center text-3xl font-bold border-2 border-red-400 shadow-lg">
+                {{ botStatus.current_target_digit }}
+              </div>
+              <div v-else class="text-slate-400 text-sm py-4">
+                Waiting for 5 digits...
+              </div>
+            </div>
+            <div v-if="botStatus.current_target_digit !== null" class="text-center text-xs text-slate-400 mt-2">
+              Next trade: DIGITDIFF ≠ {{ botStatus.current_target_digit }}
+            </div>
+          </div>
+
+          <!-- Last 5 Digits Display -->
+          <div class="mb-6">
+            <h3 class="text-sm font-medium text-slate-300 mb-3">Last 5 Digits</h3>
+            <div class="flex justify-center space-x-2">
+              <div v-for="(digit, index) in botStatus.last_5_digits" 
+                   :key="index"
+                   class="w-10 h-10 bg-slate-600/50 rounded-lg flex items-center justify-center text-lg font-bold border border-slate-500">
                 {{ digit }}
               </div>
-              <div v-if="!botStatus.rarest_digits || botStatus.rarest_digits.length === 0" class="text-slate-400 text-sm py-4">
-                No analysis data yet...
+              <div v-for="i in Math.max(0, 5 - (botStatus.last_5_digits?.length || 0))" 
+                   :key="'empty-' + i"
+                   class="w-10 h-10 bg-slate-700/30 rounded-lg flex items-center justify-center border border-slate-600 border-dashed">
+                <span class="text-slate-500 text-sm">?</span>
               </div>
             </div>
           </div>
 
+          <!-- Calculation Display -->
+          <div v-if="botStatus.tick_analysis?.last_5_calculation?.ready_to_trade" class="bg-slate-700/30 rounded-lg p-4">
+            <h3 class="text-sm font-medium text-slate-300 mb-2">Calculation</h3>
+            <div class="text-xs text-slate-400 space-y-1">
+              <div>Digits: {{ botStatus.tick_analysis.last_5_calculation.digits?.join(' + ') }}</div>
+              <div>Sum: {{ botStatus.tick_analysis.last_5_calculation.sum }}</div>
+              <div>Average: {{ botStatus.tick_analysis.last_5_calculation.average }}</div>
+              <div class="font-semibold text-red-400">Target: {{ botStatus.tick_analysis.last_5_calculation.target_digit }}</div>
+            </div>
+          </div>
+
           <!-- Digit Frequency Chart -->
-          <div class="space-y-3">
-            <h3 class="text-sm font-medium text-slate-300">Frequency Distribution</h3>
+          <div class="mt-6">
+            <h3 class="text-sm font-medium text-slate-300 mb-3">Recent Digit Frequency</h3>
             <div class="grid grid-cols-5 gap-1 sm:gap-2">
-              <div 
-                v-for="digit in [0,1,2,3,4,5,6,7,8,9]" 
-                :key="digit"
-                class="text-center"
-              >
+              <div v-for="digit in [0,1,2,3,4,5,6,7,8,9]" 
+                   :key="digit"
+                   class="text-center">
                 <div class="text-xs font-medium mb-1">{{ digit }}</div>
                 <div class="bg-slate-700/30 h-12 sm:h-16 rounded relative overflow-hidden">
                   <div 
                     :class="[
                       'absolute bottom-0 w-full transition-all duration-500',
-                      botStatus.rarest_digits?.includes(digit) ? 'bg-gradient-to-t from-red-500 to-red-400' : 'bg-gradient-to-t from-blue-500 to-blue-400'
+                      digit === botStatus.current_target_digit ? 'bg-gradient-to-t from-red-500 to-red-400' : 'bg-gradient-to-t from-blue-500 to-blue-400'
                     ]"
                     :style="{ height: `${getDigitFrequencyHeight(digit)}%` }"
                   ></div>
@@ -301,16 +338,14 @@
           <div class="mt-4 sm:mt-6">
             <h3 class="text-sm font-medium text-slate-300 mb-3">Recent Digits</h3>
             <div class="flex space-x-1 overflow-x-auto pb-2">
-              <div 
-                v-for="(digit, index) in getRecentTicks()" 
-                :key="index"
-                :class="[
-                  'flex-shrink-0 w-6 h-6 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center text-xs sm:text-sm font-bold border transition-all duration-200',
-                  botStatus.rarest_digits?.includes(digit) ? 
-                    'bg-red-500/20 border-red-500 text-red-300' : 
-                    'bg-slate-600/50 border-slate-500 text-slate-300'
-                ]"
-              >
+              <div v-for="(digit, index) in getRecentTicks()" 
+                   :key="index"
+                   :class="[
+                     'flex-shrink-0 w-6 h-6 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center text-xs sm:text-sm font-bold border transition-all duration-200',
+                     digit === botStatus.current_target_digit ? 
+                       'bg-red-500/20 border-red-500 text-red-300' : 
+                       'bg-slate-600/50 border-slate-500 text-slate-300'
+                   ]">
                 {{ digit }}
               </div>
             </div>
@@ -328,14 +363,15 @@
           
           <div class="space-y-3 sm:space-y-4">
             <div class="bg-slate-700/30 rounded-lg p-3 sm:p-4">
-              <h3 class="font-semibold text-green-400 mb-2">DIGITDIFF Strategy</h3>
+              <h3 class="font-semibold text-green-400 mb-2">Average Last 5 Digits</h3>
               <p class="text-sm text-slate-300 mb-3">
-                Trades on the assumption that the next tick will NOT match the rarest digit from recent history.
+                Calculates the average of the last 5 tick digits and uses it as the target for DIGITDIFF contracts.
               </p>
               <div class="text-xs text-slate-400">
-                • Analyzes last 100 ticks<br>
-                • Identifies underrepresented digits<br>
-                • Places DIFFERS contracts on rarest digit
+                • Collects last 5 tick digits<br>
+                • Calculates average (sum ÷ 5)<br>
+                • Uses integer part as DIGITDIFF target<br>
+                • Predicts next tick ≠ target digit
               </div>
             </div>
 
@@ -345,7 +381,8 @@
                 <div>• Max stake: 2% of balance</div>
                 <div>• Trade cooldown: {{ config.tradeCooldown }}s</div>
                 <div>• Daily loss limit: ${{ config.dailyLossLimit }}</div>
-                <div>• Minimum ticks for analysis: 20</div>
+                <div>• Minimum stake: $0.35</div>
+                <div>• Contract duration: 5 ticks</div>
               </div>
             </div>
 
@@ -353,9 +390,12 @@
               <h3 class="font-semibold text-purple-400 mb-2">Current Status</h3>
               <div class="text-xs text-slate-400 space-y-1">
                 <div>Ticks analyzed: {{ botStatus.tick_analysis?.total_ticks_analyzed || 0 }}</div>
+                <div>Trade cycle: {{ botStatus.trade_cycle_count || 0 }}</div>
                 <div>Active market: {{ config.symbol }}</div>
-                <div>Strategy: Digit Differs</div>
-                <div>Contract duration: 1 tick</div>
+                <div>Last 5 collected: {{ (botStatus.last_5_digits?.length || 0) }}/5</div>
+                <div v-if="botStatus.connection_status">
+                  Connection attempts: {{ botStatus.connection_status.connection_attempts }}/{{ botStatus.connection_status.max_attempts }}
+                </div>
               </div>
             </div>
           </div>
@@ -373,26 +413,23 @@
           </h2>
           <button 
             @click="clearLogs" 
-            class="px-3 sm:px-4 py-2 bg-slate-700/50 hover:bg-slate-600/50 rounded-lg font-medium transition-all duration-200 text-xs sm:text-sm border border-slate-600/50"
-          >
+            class="px-3 sm:px-4 py-2 bg-slate-700/50 hover:bg-slate-600/50 rounded-lg font-medium transition-all duration-200 text-xs sm:text-sm border border-slate-600/50">
             Clear Logs
           </button>
         </div>
         
         <div class="bg-slate-900/50 rounded-xl border border-slate-700/50 h-48 sm:h-64 overflow-y-auto custom-scrollbar">
           <div class="p-3 sm:p-4 space-y-2">
-            <div 
-              v-for="(log, index) in logs" 
-              :key="index"
-              :class="[
-                'flex items-start space-x-2 sm:space-x-3 py-2 px-3 rounded-lg transition-colors duration-200 slide-in',
-                log.level === 'success' ? 'bg-green-500/10 border-l-4 border-green-500' :
-                log.level === 'error' ? 'bg-red-500/10 border-l-4 border-red-500' :
-                log.level === 'warning' ? 'bg-yellow-500/10 border-l-4 border-yellow-500' :
-                log.level === 'trade' ? 'bg-blue-500/10 border-l-4 border-blue-500' :
-                'bg-slate-500/10 border-l-4 border-slate-500'
-              ]"
-            >
+            <div v-for="(log, index) in logs" 
+                 :key="index"
+                 :class="[
+                   'flex items-start space-x-2 sm:space-x-3 py-2 px-3 rounded-lg transition-colors duration-200 slide-in',
+                   log.level === 'success' ? 'bg-green-500/10 border-l-4 border-green-500' :
+                   log.level === 'error' ? 'bg-red-500/10 border-l-4 border-red-500' :
+                   log.level === 'warning' ? 'bg-yellow-500/10 border-l-4 border-yellow-500' :
+                   log.level === 'trade' ? 'bg-blue-500/10 border-l-4 border-blue-500' :
+                   'bg-slate-500/10 border-l-4 border-slate-500'
+                 ]">
               <div class="flex-shrink-0 mt-1">
                 <svg v-if="log.level === 'success'" class="w-3 sm:w-4 h-3 sm:h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
@@ -445,10 +482,12 @@
 import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
 
 export default {
-  name: 'DigitDiffersTradingDashboard',
+  name: 'AverageLast5DigitsTradingDashboard',
   setup() {
-    // API Configuration
-    const API_BASE_URL = 'https://codexd-production.up.railway.app'
+    // API Configuration - matches your backend
+    const API_BASE_URL = window.location.hostname === "localhost" 
+      ? "http://localhost:8000" 
+      : "https://your-backend-url.com";
 
     // Configuration state
     const config = ref({
@@ -459,28 +498,44 @@ export default {
       tradeCooldown: 5
     })
 
-    // Bot status and statistics
+    // Bot status matching your backend structure
     const botStatus = ref({
       is_running: false,
+      is_connected: false,
       symbol: null,
+      strategy: "Average Last 5 Digits",
       total_trades: 0,
       successful_trades: 0,
       win_rate: 0,
       total_pnl: 0,
       daily_pnl: 0,
       current_balance: 0,
-      rarest_digits: [],
+      current_target_digit: null,
+      trade_cycle_count: 0,
+      last_5_digits: [],
       tick_analysis: {
         total_ticks_analyzed: 0,
         digit_frequencies: {},
-        recent_ticks: []
+        recent_ticks: [],
+        last_5_calculation: {
+          digits_collected: 0,
+          digits: [],
+          ready_to_trade: false,
+          sum: 0,
+          average: 0,
+          target_digit: null
+        }
       },
-      uptime_minutes: 0
+      uptime_minutes: 0,
+      connection_status: {
+        connected: false,
+        connection_attempts: 0,
+        max_attempts: 3
+      }
     })
 
     // Real-time data
     const currentTick = ref(null)
-    const apiConnected = ref(false)
     const loading = ref(false)
     const logs = ref([])
 
@@ -489,7 +544,6 @@ export default {
 
     // Polling intervals
     let statusInterval = null
-    let tickInterval = null
 
     // API utility function
     const makeApiRequest = async (endpoint, method = 'GET', data = null) => {
@@ -533,7 +587,7 @@ export default {
       }
     }
 
-    // Bot control functions
+    // Bot control functions matching your backend API
     const startBot = async () => {
       if (!config.value.token.trim()) {
         log('Please enter a valid Deriv API token', 'error')
@@ -543,27 +597,26 @@ export default {
       loading.value = true
       
       try {
-        log('Initializing Digit Differs trading bot...', 'info')
+        log('Starting Average Last 5 Digits trading bot...', 'info')
         
         // Save token to localStorage
         localStorage.setItem('deriv_token', config.value.token)
         
-        // Start the enhanced bot
-        const response = await makeApiRequest('/api/start-bot', 'POST', {
+        // Start the bot using your backend endpoint
+        const response = await makeApiRequest('/start', 'POST', {
           token: config.value.token,
           symbol: config.value.symbol,
-          strategy: 'digit_differs',
-          stake: config.value.stake
+          stake: config.value.stake,
+          duration: 5 // Fixed 5 ticks as in your backend
         })
 
-        if (response.status === 'started' || response.status === 'running') {
+        if (response.status === 'started') {
           log(`Bot started successfully on ${config.value.symbol}`, 'success', `Stake: ${config.value.stake}`)
-          log(`Strategy: Digit Differs (DIGITDIFF contracts)`, 'info')
+          log('Strategy: Average Last 5 Digits → DIGITDIFF', 'info')
           log(`Risk limits: ${config.value.dailyLossLimit} daily loss, ${config.value.tradeCooldown}s cooldown`, 'info')
           
           // Start monitoring
           startStatusPolling()
-          
           
         } else {
           log(`Bot start failed: ${response.message || 'Unknown error'}`, 'error')
@@ -571,7 +624,6 @@ export default {
         
       } catch (error) {
         log(`Failed to start bot: ${error.message}`, 'error')
-        apiConnected.value = false
       } finally {
         loading.value = false
       }
@@ -583,7 +635,7 @@ export default {
       try {
         log('Stopping trading bot...', 'info')
         
-        const response = await makeApiRequest('/api/stop-bot', 'POST')
+        const response = await makeApiRequest('/stop', 'POST')
         
         if (response.status === 'stopped') {
           log('Trading bot stopped successfully', 'success')
@@ -597,12 +649,10 @@ export default {
         
         stopStatusPolling()
         
-        
       } catch (error) {
         log(`Error stopping bot: ${error.message}`, 'error')
       } finally {
         loading.value = false
-        // Force local state update
         botStatus.value.is_running = false
       }
     }
@@ -611,10 +661,11 @@ export default {
       try {
         log('Executing manual trade...', 'info')
         
-        const response = await makeApiRequest('/api/force-trade', 'POST')
+        const response = await makeApiRequest('/force-trade', 'POST')
         
         if (response.status === 'success') {
           log(`Manual trade executed on digit ${response.target_digit}`, 'trade', `Target: ${response.target_digit}`)
+          log(`Calculation: ${response.calculation?.digits?.join('+')} = ${response.calculation?.sum} → ${response.calculation?.target_digit}`, 'info')
         } else {
           log(`Manual trade failed: ${response.message}`, 'error')
         }
@@ -630,7 +681,7 @@ export default {
         
         // Update settings via API if bot is running
         if (botStatus.value.is_running) {
-          await makeApiRequest('/api/update-settings', 'POST', {
+          await makeApiRequest('/update-settings', 'POST', {
             stake: config.value.stake,
             trade_cooldown: config.value.tradeCooldown,
             daily_loss_limit: config.value.dailyLossLimit
@@ -647,28 +698,63 @@ export default {
       }
     }
 
-    // Status monitoring
-    const getBotStatus = async () => {
+    const resetData = async () => {
       try {
-        const response = await makeApiRequest('/api/bot-stats')
+        log('Resetting all data...', 'info')
         
-        // Update bot status
-        Object.assign(botStatus.value, response)
+        const response = await makeApiRequest('/reset', 'POST')
         
-        // Update connection status
-        if (!apiConnected.value) {
-          apiConnected.value = true
-          log('API connection restored', 'success')
+        if (response.status === 'success') {
+          log('All data has been reset', 'success')
+          
+          // Clear local state
+          botStatus.value = {
+            ...botStatus.value,
+            total_trades: 0,
+            successful_trades: 0,
+            win_rate: 0,
+            total_pnl: 0,
+            daily_pnl: 0,
+            current_target_digit: null,
+            trade_cycle_count: 0,
+            last_5_digits: [],
+            tick_analysis: {
+              total_ticks_analyzed: 0,
+              digit_frequencies: {},
+              recent_ticks: [],
+              last_5_calculation: {
+                digits_collected: 0,
+                digits: [],
+                ready_to_trade: false
+              }
+            }
+          }
+          
+          setTimeout(async () => {
+            await getBotStatus()
+          }, 1000)
+          
+        } else {
+          log(`Reset failed: ${response.message || 'Unknown error'}`, 'error')
         }
         
       } catch (error) {
-        if (apiConnected.value) {
-          apiConnected.value = false
-          log('Lost connection to API server', 'warning')
-        }
+        log(`Reset data error: ${error.message}`, 'error')
+      }
+    }
+
+    // Status monitoring
+    const getBotStatus = async () => {
+      try {
+        const response = await makeApiRequest('/statistics')
         
-        // Reset bot status on connection loss
+        // Update bot status with your backend structure
+        Object.assign(botStatus.value, response)
+        
+      } catch (error) {
+        // Connection lost
         botStatus.value.is_running = false
+        botStatus.value.is_connected = false
       }
     }
 
@@ -677,7 +763,7 @@ export default {
       
       statusInterval = setInterval(async () => {
         await getBotStatus()
-      }, 20000)
+      }, 2000)
       
       log('Started real-time monitoring', 'info')
     }
@@ -690,7 +776,7 @@ export default {
       }
     }
 
-    // Utility functions for display
+    // Utility functions
     const formatUptime = (minutes) => {
       if (!minutes) return '0m'
       if (minutes < 60) return `${Math.floor(minutes)}m`
@@ -722,22 +808,17 @@ export default {
     // Test connection on mount
     const testConnection = async () => {
       try {
-        const response = await makeApiRequest('/')
-        if (response.message) {
-          apiConnected.value = true
-          log('Connected to trading API server', 'success')
-          
-          // Check if bot is already running
-          await getBotStatus()
-          
-          if (botStatus.value.is_running) {
-            log('Detected active bot session, resuming monitoring...', 'info')
-            startStatusPolling()
-          }
+        const response = await makeApiRequest('/statistics')
+        log('Connected to trading API server', 'success')
+        
+        // Check if bot is already running
+        if (response.is_running) {
+          log('Detected active bot session, resuming monitoring...', 'info')
+          Object.assign(botStatus.value, response)
+          startStatusPolling()
         }
       } catch (error) {
-        apiConnected.value = false
-        log('Failed to connect to API server. Please ensure the FastAPI server is running.', 'error')
+        log('Failed to connect to API server. Please ensure the backend is running.', 'error')
       }
     }
 
@@ -760,8 +841,8 @@ export default {
       }
 
       // Initialize
-      log('Initializing Enhanced Digit Differs Bot Dashboard...', 'info')
-      log('Strategy: DIGITDIFF contracts on rarest digits', 'info')
+      log('Initializing Average Last 5 Digits Bot Dashboard...', 'info')
+      log('Strategy: Calculate average of last 5 digits → DIGITDIFF target', 'info')
       
       await testConnection()
       
@@ -777,7 +858,6 @@ export default {
       config,
       botStatus,
       currentTick,
-      apiConnected,
       loading,
       logs,
       availableMarkets,
@@ -787,6 +867,7 @@ export default {
       stopBot,
       forceTrade,
       updateSettings,
+      resetData,
       clearLogs,
       
       // Utilities
@@ -847,11 +928,6 @@ button:active:not(:disabled) {
 input:focus, select:focus {
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
-}
-
-/* Container max width */
-.container {
-  max-width: 1400px;
 }
 
 /* Focus states for accessibility */
