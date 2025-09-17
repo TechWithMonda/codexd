@@ -562,7 +562,7 @@ export default {
           
           // Start monitoring
           startStatusPolling()
-          startTickSimulation()
+          
           
         } else {
           log(`Bot start failed: ${response.message || 'Unknown error'}`, 'error')
@@ -595,7 +595,7 @@ export default {
         }
         
         stopStatusPolling()
-        stopTickSimulation()
+        
         
       } catch (error) {
         log(`Error stopping bot: ${error.message}`, 'error')
@@ -676,7 +676,7 @@ export default {
       
       statusInterval = setInterval(async () => {
         await getBotStatus()
-      }, 2000)
+      }, 20000)
       
       log('Started real-time monitoring', 'info')
     }
@@ -689,40 +689,8 @@ export default {
       }
     }
 
-    // Simulate tick data for demo purposes
-    const startTickSimulation = () => {
-      if (tickInterval) return
-      
-      tickInterval = setInterval(() => {
-        if (!botStatus.value.is_running) return
-        
-        // Generate realistic tick data
-        const basePrice = 1000.0
-        const variation = (Math.random() - 0.5) * 20
-        const quote = (basePrice + variation).toFixed(5)
-        const lastDigit = parseInt(quote.slice(-1))
-        
-        currentTick.value = {
-          quote: parseFloat(quote),
-          last_digit: lastDigit,
-          symbol: config.value.symbol,
-          timestamp: Date.now()
-        }
-        
-        // Occasionally log significant ticks
-        if (botStatus.value.rarest_digits.includes(lastDigit) && Math.random() < 0.3) {
-          log(`Rare digit ${lastDigit} appeared in tick ${quote}`, 'trade', `Digit: ${lastDigit}`)
-        }
-        
-      }, 1000 + Math.random() * 2000) // Random interval 1-3 seconds
-    }
-
-    const stopTickSimulation = () => {
-      if (tickInterval) {
-        clearInterval(tickInterval)
-        tickInterval = null
-      }
-    }
+   
+   
 
     // Utility functions for display
     const formatUptime = (minutes) => {
