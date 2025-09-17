@@ -487,7 +487,7 @@ export default {
     // API Configuration - matches your backend
     const API_BASE_URL = window.location.hostname === "localhost" 
       ? "http://localhost:8000" 
-      : "https://codexd-production.up.railway.app/api";
+      : "https://codexd-production.up.railway.app";
 
     // Configuration state
     const config = ref({
